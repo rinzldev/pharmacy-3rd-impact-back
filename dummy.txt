@@ -31,7 +31,11 @@ https://www.npmjs.com/package/bcryptjs
 
 PORT=3000
 DB_USER='postgres'
-DB_PASSWORD='r3izer'
+DB_PASSWORD='postgres'
 DB_HOST='localhost'
 DB_NAME='himekolovers'
 DB_PORT='5432'
+
+postgres://undefined:undefined@undefined:undefined/undefined?sslmode=disable
+
+localhost:3000/

@@ -13,11 +13,13 @@ module.exports = (sequelize, Sequelize) => {
 		status:{
 			type: Sequelize.BOOLEAN
 		},
+	},{
+		timestamps: false
 	})
 
 	Office.associate = function (models) {
-		Office.hasMany(models.User, { foreignKey: 'SID' })
-		Office.hasMany(models.Inventory, { foreignKey: 'SID' })
+		Office.belongsTo(models.User, { foreignKey: 'SID' })
+		//Office.hasMany(models.Inventory, { foreignKey: 'SID' })
 	}
 
 	return Office;

@@ -2,29 +2,40 @@ const path = require("path")
 const express = require("express")
 const cors = require('cors')
 const morgan = require('morgan')
-const db = require("./db/sequelize");
+const db = require("./db/db");
 const authRoutes = require("./routes")
-require('dotenv').config()
 
 const port = process.env.PORT
 
 const app = express();
 
+app.use(cors())
 app.use(morgan('tiny'))
+app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-var corsOptions = {
-  origin: "http://localhost:8081"
-};
+// var corsOptions = {
+//   origin: "http://localhost:8081"
+// };
 
-app.use(cors(corsOptions));
-app.use(cors())
+// app.use(cors(corsOptions));
+
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-db.sequelize.sync()
+try
+{
+  db.sequelize.sync()
+  //db.sequelize.sync({ force: true })
+}
+catch(e)
+{
+  console.log(e)
+}
+
 app.use(authRoutes)
+
 
 app.get('/', (req, res) => {
     res.send('Venezuela no se ha arreglado!')
