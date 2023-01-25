@@ -35,10 +35,12 @@ module.exports = (sequelize, Sequelize) => {
 		status:{
 			type: Sequelize.BOOLEAN
 		},	
+	},{
+		timestamps: false
 	})
 
 	User.associate = function (models) {
-		User.belongsTo(models.Office, { foreignKey: 'SID' })
+		User.hasOne(models.Office, { foreignKey: 'SID' })
 	}
 
 	return User;

@@ -1,5 +1,6 @@
 'use strict'
-const MUser = require('../models/user.model')
+const db = require('../db/db')
+const MUser = db.users
 const responses = require('../middlewares/responses')
 
 async function getAllUsers (req, res) {
@@ -15,6 +16,7 @@ async function getAllUsers (req, res) {
 
 async function getUserByID (req, res) {
     try {
+      //Ejecute aqui el Servicio//
       responses.makeResponseOkData(res, users, "Success")
     } catch (e) {
       responses.makeResponsesException(res, e)
@@ -31,8 +33,9 @@ async function updateUser (req, res) {
 
 async function createUser (req, res) {
     try {
-        const userData = req.body
-        const user = await MUser.create({  
+        let userData = req.body
+        const usr = await MUser.create({  
+          SID: userData.SID,
           identification: userData.identification,
           name: userData.name,
           lastName: userData.lastName,

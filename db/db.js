@@ -1,7 +1,9 @@
 const Sequelize = require("sequelize");
+require('dotenv').config()
 
 let connString = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?sslmode=disable`;
 
+console.log(connString)
 const sequelize = new Sequelize(connString, {
   dialect: "postgres",
   dialectOptions: {
@@ -15,5 +17,7 @@ const sequelize = new Sequelize(connString, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
+db.users = require("../models/user.model")(sequelize, Sequelize);
+db.offices = require("../models/office.model")(sequelize, Sequelize);
 
 module.exports = db;
