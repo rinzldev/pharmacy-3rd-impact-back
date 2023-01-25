@@ -3,13 +3,13 @@
 module.exports = (sequelize, Sequelize) => {
 	const Inventory = sequelize.define('Inventory',{
 		SID:{
-			type: Sequelize.INTEGER(10)
+			type: Sequelize.INTEGER
 		},
 		MID:{
-			type: Sequelize.INTEGER(15)
+			type: Sequelize.INTEGER
 		},
 		quantity:{
-			type: Sequelize.INTEGER(10)
+			type: Sequelize.INTEGER
 		},
 	})
 
