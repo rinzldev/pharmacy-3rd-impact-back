@@ -1,0 +1,41 @@
+Viva el elemento Hielo
+
+npm install dotenv --save
+
+postgres://process.env.DB_USER:process.DB_PASSWORD.PORT@process.env.DB_HOST:process.env.DB_PORT/process.env.DB_NAME"
+
+DB_BRONYA='NYET'
+
+require('dotenv').config();const config={env:process.env.NODE_ENV||'dev',port:process.env.PORT||3000,dbUser:process.env.DB_USER,dbPassword:process.env.DB_PASSWORD,dbHost:process.env.DB_HOST,dbName:process.env.DB_NAME,dbPort:process.env.DB_PORT,}
+module.exports={config};
+
+
+
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || 'lavainaquetenemo',
+    ssl: process.env.DATABASE_URL ? true : false
+})
+
+
+teamamoshimeko.com/valkiria?nombre="Bronya", Esta es una forma
+
+teamamoshimeko.com/valkirias/1080, Esta es otra forma
+teamamoshimeko.com/valkirias/{id}
+
+teamamoshimeko.com/valkirias/1080?nombre="Bronya", Esta es otra forma
+
+https://dev.to/qbentil/http-methods-get-post-put-patch-delete-1fhi
+
+bcryptjs
+https://www.npmjs.com/package/bcryptjs
+
+PORT=3000
+DB_USER='postgres'
+DB_PASSWORD='postgres'
+DB_HOST='localhost'
+DB_NAME='himekolovers'
+DB_PORT='5432'
+
+postgres://undefined:undefined@undefined:undefined/undefined?sslmode=disable
+
+localhost:3000/

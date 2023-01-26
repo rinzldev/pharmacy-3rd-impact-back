@@ -1,0 +1,11 @@
+{
+    "SID":0,
+    "identification":"",
+    "name":"",
+    "lastName":"",
+    "mail":"",
+    "phone":"",
+    "type":1,
+    "password":"",
+    "status":true
+}
