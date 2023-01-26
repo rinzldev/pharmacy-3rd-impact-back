@@ -20,10 +20,12 @@ module.exports = (sequelize, Sequelize) => {
 		status:{
 			type: Sequelize.BOOLEAN
 		},
+	},{
+		timestamps: false
 	})
 
 	Medicine.associate = function (models) {
-		Medicine.hasMany(models.Inventory, { foreignKey: 'MID' })
+		//Medicine.hasMany(models.Inventory, { foreignKey: 'MID' })
 	}
 	
 	return Medicine;

@@ -95,6 +95,7 @@
     "ReactionCreated": "Reaction created",
     "ReactionFalse": "Reaction false",
     "ReactionTrue": "Reaction true",
-    "TFound": "Error, utag has been used"
+    "TFound": "Error, utag has been used",
+    "IdentiExist": "Error, identification already exists"
 
 }

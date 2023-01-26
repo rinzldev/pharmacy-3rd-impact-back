@@ -15,25 +15,32 @@ module.exports = (sequelize, Sequelize) => {
 			unique: true,
 		},
 		name:{
-			type: Sequelize.STRING(50)
+			type: Sequelize.STRING(50),
+			require: true
 		},
 		lastName:{
-			type: Sequelize.STRING(50)
+			type: Sequelize.STRING(50),
+			require: true
 		},
 		mail:{
-			type: Sequelize.STRING(100)
+			type: Sequelize.STRING(100),
+			require: true
 		},
 		phone:{
-			type: Sequelize.STRING(15)
+			type: Sequelize.STRING(15),
+			require: true
 		},
 		type:{
-			type: Sequelize.INTEGER
+			type: Sequelize.INTEGER,
+			require: true
 		},		
 		password:{
-			type: Sequelize.STRING(30)
+			type: Sequelize.STRING(30),
+			require: true
 		},
 		status:{
-			type: Sequelize.BOOLEAN
+			type: Sequelize.BOOLEAN,
+			require: true
 		},	
 	},{
 		timestamps: false

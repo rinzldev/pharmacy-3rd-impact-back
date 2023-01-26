@@ -11,6 +11,8 @@ module.exports = (sequelize, Sequelize) => {
 		quantity:{
 			type: Sequelize.INTEGER
 		},
+	},{
+		timestamps: false
 	})
 
 	Inventory.associate = function (models) {

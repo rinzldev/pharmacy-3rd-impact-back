@@ -19,5 +19,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 db.users = require("../models/user.model")(sequelize, Sequelize);
 db.offices = require("../models/office.model")(sequelize, Sequelize);
+db.medicines = require("../models/medicine.model")(sequelize, Sequelize);
 
 module.exports = db;
