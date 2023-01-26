@@ -2,6 +2,11 @@
 const db = require('../db/db')
 const MUser = db.users
 const responses = require('../middlewares/responses')
+const validate = require('../middlewares/validate')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+
+
 
 // get all users
 async function getAllUsers (req, res) {
@@ -33,23 +38,82 @@ async function getUserByID(req, res) {
 // Create User
 async function createUser (req, res) {
     try {
-        let userData = req.body
-        await MUser.create({  
-          SID: userData.SID,
+        const userData = req.body
+        const existuser = await MUser.findOne({ where: {
           identification: userData.identification,
-          name: userData.name,
-          lastName: userData.lastName,
-          mail: userData.mail,
-          phone:  userData.phone,
-          type: userData.type,
-          password: userData.password,
-          status: userData.status,
+          status: true}   
         })
-        responses.makeResponsesOk(res, "Success")
+        if(existuser){
+          responses.makeResponsesError(res, 'UFound')
+                
+        }else if(await MUser.findOne({ where: {
+          identification: userData.identification,
+          status: false
+        }
+        })) {
+          const saveUser = await MUser.findOne({
+            where: {
+              status: true
+            }
+          })
+          if (saveUser != null){
+             saveUser = await MUser.update({
+              status: true
+            })
+
+          }
+          responses.makeResponsesOkData(res, saveUser, "Success")
+        }
+      
+        else{
+           await MUser.create({  
+            SID: userData.SID,
+            identification: userData.identification,
+            name: userData.name,
+            lastName: userData.lastName,
+            mail: userData.mail,
+            phone:  userData.phone,
+            type: userData.type,
+            password: bcrypt.hashSync(userData.password),
+            status: userData.status,
+          })
+          responses.makeResponsesOk(res,"Success")
+        }
     } catch (e) {
-    responses.makeResponsesException(res, e)
+      responses.makeResponsesException(res, e)
     }
 }
+
+const login = async(req, res) => {
+  try{
+    const userval = await MUser.findOne({
+      mail: req.body.mail
+    })
+    if(!userval) {
+      return responses.makeResponsesError(res, 'Incorrect credentials', 'ULoginError1')
+    }
+    const passwval = await validate.comparePassword(req.body.password, userval.password)
+
+    if(!passwval) {
+      return responses.makeResponsesError(res, 'Incorrect credentials', 'ULoginError2')
+    }
+
+    const secret = process.env.SECRET_KEY
+    const token = jwt.sign({id: userval._id,}, secret, {expiresIn: '1w'})
+    const user = {
+      id: userval._id,
+      type: userval.type,
+      token: token
+    }
+    responses.makeResponsesOkData(res, user, 'Success')
+
+  }catch(e){
+    responses.makeResponsesError(res, e, 'UnexpectedError')
+  }
+
+
+}
+
 
 //Update User
 async function updateUser (req, res){
@@ -141,8 +205,9 @@ async function deleteUser (req, res) {
 module.exports = {
     getAllUsers,
     getUserByID,
-    updateUser,
     createUser,
+    login,
+    updateUser,
     deleteUser,
     logicaldeluser
 }
