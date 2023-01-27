@@ -16,6 +16,22 @@ function makeResponsesException(res, err) {
   res.status(404).json(msg)
 }
 
+function makeResponsesUnauthorized(res, err) {
+  const msg = {
+    OK: 0,
+    Message: err
+  }
+  res.status(401).json(msg)
+}
+
+function makeResponsesForbidden(res, err) {
+  const msg = {
+    OK: 0,
+    Message: err
+  }
+  res.status(403).json(msg)
+}
+
 function makeResponsesOk(res, code) {
   const msg = {
     OK: 1,
@@ -34,6 +50,8 @@ function makeResponsesOkData(res, data, code) {
 }
 
 module.exports = {
+  makeResponsesUnauthorized,
+  makeResponsesForbidden,
   makeResponsesException,
   makeResponsesOkData,
   makeResponsesError,

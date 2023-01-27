@@ -7,7 +7,7 @@ async function getAllInventories (req, res) {
         const inventories = await MInventory.findAll({
             order: [['SID', 'asc']]
         })
-      responses.makeResponseOkData(res, inventories, "Success")
+      responses.makeResponsesOkData(res, inventories, "Success")
     } catch (e) {
       responses.makeResponsesException(res, e)
     }
@@ -15,7 +15,7 @@ async function getAllInventories (req, res) {
 
   async function getInventoryByOfficeID (req, res) {
       try {
-      responses.makeResponseOkData(res, inventories, "Success")
+      responses.makeResponsesOkData(res, inventories, "Success")
       } catch (e) {
       responses.makeResponsesException(res, e)
       }
@@ -23,7 +23,7 @@ async function getAllInventories (req, res) {
 
   async function getInventoryByMedicineID (req, res) {
     try {
-    responses.makeResponseOkData(res, inventories, "Success")
+    responses.makeResponsesOkData(res, inventories, "Success")
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
@@ -31,19 +31,32 @@ async function getAllInventories (req, res) {
   
 async function updateInventory (req, res) {
     try {
-    responses.makeResponseOk(res, "Success")
+    responses.makeResponsesOk(res, "Success")
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
 }
 
+
 async function createInventory (req, res) {
     try {
-    responses.makeResponseOk(res, "Success")
+        
+        let inventoryData = req.body
+        await MInventory.create({  
+            
+            SID: inventoryData.SID,
+            MID: inventoryData.MID,
+            quantity: inventoryData.quantity
+
+          })
+          responses.makeResponsesOk(res,"Success")    
+    responses.makeResponsesOk(res, "Success")
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
 }
+
+
 
 module.exports = {
     getAllInventories,

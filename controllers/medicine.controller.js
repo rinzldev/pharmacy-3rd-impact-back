@@ -44,7 +44,6 @@ async function createMedicine (req, res) {
 }
 
 
-
 async function updateMedicine (req, res) {
     try {
         const id = req.params.id
@@ -96,7 +95,6 @@ async function logicaldelMedicine (req, res) {
         responses.makeResponsesException(res, e)
     }
 }
-
 
 
 async function deleteMedicine (req, res) {
