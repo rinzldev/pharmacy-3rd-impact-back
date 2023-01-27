@@ -4,7 +4,7 @@
     "UUpdated": "User updated",
     "UDeleted": "User deleted",
     "UNotFound": "Error, user not found",
-    "UFound": "Error, email has been used",
+    "UFound": "Error, identification has been used",
     "UVoid": "Error, not data",
     "ULogin": "Login success",
     "ULoginError1": "Error, the user don't exits",

@@ -2,6 +2,9 @@
 const db = require('../db/db')
 const MUser = db.users
 const responses = require('../middlewares/responses')
+const validate = require('../middlewares/validate')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
 // get all users
 async function getAllUsers (req, res) {
@@ -18,13 +21,16 @@ async function getAllUsers (req, res) {
 
 // Find user by Id
 async function getUserByID(req, res) {
-
     try {
       const uid = req.params.id
       const user = await MUser.findOne({
         where: { UID: uid, status: true } 
       })
-      responses.makeResponsesOk(res, user, "Success")
+
+      if(user != null)
+        responses.makeResponsesOk(res, user, "Success")
+      else
+        responses.makeResponsesError(res, "UNotFound")
     } catch (e) {
       responses.makeResponsesException(res, e)
     }
@@ -32,8 +38,35 @@ async function getUserByID(req, res) {
 
 // Create User
 async function createUser (req, res) {
-    try {
-        let userData = req.body
+try {
+  const userData = req.body
+  const existuser = await MUser.findOne({ where: {
+    identification: userData.identification,
+    status: true}   
+  })
+  if(existuser){
+    responses.makeResponsesError(res, "UFound")
+  }
+  else{
+      let FUser = await MUser.findOne({ where: {
+        identification: userData.identification,
+        status: false
+      }})
+      if (FUser) {
+          await MUser.update({
+          identification: userData.identification,
+          name: userData.name,
+          lastName: userData.lastName,
+          mail: userData.mail,
+          phone:  userData.phone,
+          type: userData.type,
+          password: bcrypt.hashSync(userData.password),
+          status: true,
+        },
+        {
+          where: { UID: FUser.UID }
+        })
+      } else {
         await MUser.create({  
           SID: userData.SID,
           identification: userData.identification,
@@ -42,13 +75,45 @@ async function createUser (req, res) {
           mail: userData.mail,
           phone:  userData.phone,
           type: userData.type,
-          password: userData.password,
+          password: bcrypt.hashSync(userData.password),
           status: userData.status,
         })
-        responses.makeResponsesOk(res, "Success")
-    } catch (e) {
+      }      
+    responses.makeResponsesOk(res,"Success")
+  }
+  } catch (e) {
     responses.makeResponsesException(res, e)
+  }
+}
+
+//login
+async function login (req, res) {
+  try{
+    const userval = await MUser.findOne({ 
+      where:{mail: req.body.mail}
+      
+    })
+    if(!userval) {
+      responses.makeResponsesError(res, 'Incorrect credentials', 'ULoginError1')
     }
+    const passwval = await validate.comparePassword(req.body.password, userval.password)
+
+    if(!passwval) {
+      responses.makeResponsesError(res, 'Incorrect credentials', 'ULoginError2')
+    }
+
+    const secret = process.env.SECRET_KEY
+    const token = jwt.sign({id: userval._id,}, secret, {expiresIn: '1w'})
+    const user = {
+      id: userval._id,
+      type: userval.type,
+      token: token
+    }
+    responses.makeResponsesOkData(res, user, 'Success')
+
+  }catch(e){
+    responses.makeResponsesError(res, e, 'UnexpectedError')
+  }
 }
 
 //Update User
@@ -67,7 +132,7 @@ async function updateUser (req, res){
           mail: userData.mail,
           phone:  userData.phone,
           type: userData.type,
-          password: userData.password,
+          password: bcrypt.hashSync(userData.password),
           status: userData.status,
         },
         {
@@ -99,7 +164,7 @@ async function logicaldeluser(req, res){
           mail: userData.mail,
           phone:  userData.phone,
           type: userData.type,
-          password: userData.password,
+          password: bcrypt.hashSync(userData.password),
           status: userData.status = false,
         },
         {
@@ -141,8 +206,9 @@ async function deleteUser (req, res) {
 module.exports = {
     getAllUsers,
     getUserByID,
-    updateUser,
     createUser,
+    login,
+    updateUser,
     deleteUser,
     logicaldeluser
 }

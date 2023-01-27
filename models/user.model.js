@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
 			require: true
 		},		
 		password:{
-			type: Sequelize.STRING(30),
+			type: Sequelize.STRING(100),
 			require: true
 		},
 		status:{

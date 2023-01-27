@@ -34,11 +34,12 @@ catch(e)
   console.log(e)
 }
 
+
 app.use(authRoutes)
 
 
 app.get('/', (req, res) => {
-    res.send('Venezuela no se ha arreglado!')
+    res.send('Honkai 3rd Impact.')
 })
 
 app.listen(port, () => {
