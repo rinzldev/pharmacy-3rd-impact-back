@@ -12,13 +12,17 @@ module.exports = (sequelize, Sequelize) => {
 			unique:true
 		},
 		desc:{
-			type: Sequelize.STRING(100)
+			type: Sequelize.STRING(100),
+			require: true
+			
 		},
 		presentation:{
-			type: Sequelize.STRING(100)
+			type: Sequelize.STRING(100),
+			require: true
 		},
 		status:{
-			type: Sequelize.BOOLEAN
+			type: Sequelize.BOOLEAN,
+			require: true
 		},
 	},{
 		timestamps: false

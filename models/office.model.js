@@ -8,10 +8,12 @@ module.exports = (sequelize, Sequelize) => {
 			primaryKey: true
 		},
 		code:{
-			type: Sequelize.STRING(50)
+			type: Sequelize.STRING(50),
+			require: true
 		},
 		status:{
-			type: Sequelize.BOOLEAN
+			type: Sequelize.BOOLEAN,
+			require: true
 		},
 	},{
 		timestamps: false

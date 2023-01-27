@@ -48,7 +48,7 @@ try {
     responses.makeResponsesError(res, "UFound")
   }
   else{
-      let FUser = await MUser.findOne({ where: {
+      const FUser = await MUser.findOne({ where: {
         identification: userData.identification,
         status: false
       }})

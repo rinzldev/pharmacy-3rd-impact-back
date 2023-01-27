@@ -30,14 +30,40 @@ async function getMedicineByID (req, res) {
 
 async function createMedicine (req, res) {
     try {
-        let medicineData = req.body
-        await MMedicine.create({  
-          code: medicineData.code,
-          desc: medicineData.desc,
-          presentation: medicineData.presentation,
-          status: medicineData.status,
+        const medicineData = req.body
+        const existmedicine = await MMedicine.findOne({ where:{
+            code: medicineData.code,
+            status: medicineData.status
+        }   
         })
-        responses.makeResponsesOk(res, "Success")
+        if(existmedicine){
+            responses.makeResponsesError(res,"ExistMedicine")
+        }else{
+            const FMedicine = await MMedicine.findOne({where: {
+                code: medicineData.code,
+                status: false
+            }})
+            if (FMedicine){
+                await MMedicine.update({
+                    code: medicineData.code,
+                    desc: medicineData.desc,
+                    presentation: medicineData.presentation,
+                    status: true
+                },
+                {
+                    where: {MID: FMedicine.MID}
+                })
+            }
+            else{
+                await MMedicine.create({
+                    code: medicineData.code,
+                    desc: medicineData.desc,
+                    presentation: medicineData.presentation,
+                    status: medicineData.status
+                })
+            }
+            responses.makeResponsesOk(res, "Success")
+        }
     } catch (e) {
     responses.makeResponsesException(res, e)
     }

@@ -3,15 +3,16 @@ const MInventory = require('../models/inventory.model')
 const responses = require('../middlewares/responses')
 
 async function getAllInventories (req, res) {
-    try {
-        const inventories = await MInventory.findAll({
-            order: [['SID', 'asc']]
-        })
-      responses.makeResponsesOkData(res, inventories, "Success")
-    } catch (e) {
-      responses.makeResponsesException(res, e)
+        try {
+            const inventories = await MInventory.findAll({
+                
+            })
+            responses.makeResponsesOkData(res, inventories, "Success")
+        } catch (e) {
+            responses.makeResponsesException(res, e)
+        }
     }
-  }
+    
 
   async function getInventoryByOfficeID (req, res) {
       try {
@@ -41,7 +42,7 @@ async function updateInventory (req, res) {
 async function createInventory (req, res) {
     try {
         
-        let inventoryData = req.body
+        const inventoryData = req.body
         await MInventory.create({  
             
             SID: inventoryData.SID,
@@ -50,7 +51,6 @@ async function createInventory (req, res) {
 
           })
           responses.makeResponsesOk(res,"Success")    
-    responses.makeResponsesOk(res, "Success")
     } catch (e) {
     responses.makeResponsesException(res, e)
     }

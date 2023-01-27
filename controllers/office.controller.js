@@ -31,12 +31,35 @@ async function getOfficeByID (req, res) {
 
 async function createOffice (req, res) {
     try {
-        let officeData = req.body
-        await MOffice.create({  
+        const officeData = req.body
+        const existoffic = await MOffice.findOne({where: {
             code: officeData.code,
-            status: officeData.status
-        })
-        responses.makeResponsesOk(res, "Success")
+            status: true
+        }})        
+        if(existoffic){
+            responses.makeResponsesError(res,"ExistOffice")
+        }else{
+            const FOffice = await MOffice.findOne({where: {
+                code: officeData.code,
+                status: false
+            }})
+            if (FOffice){
+                await MOffice.update({             
+                    code: officeData.code,
+                    status: true,    
+            },
+            {
+                where: { SID: FOffice.SID }
+              })
+            }
+            else{
+                await MOffice.create({  
+                    code: officeData.code,
+                    status: officeData.status
+                })
+            }
+                responses.makeResponsesOk(res, "Success")
+        }
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
@@ -88,11 +111,36 @@ async function deleteOffice (req, res) {
     }
 }
       
+async function logicaldeloffice(req, res){
+    try {
+      const id = req.params.id
+        let officeData = req.body
+        const office = await MOffice.findOne({
+          where: { SID: id, status: true }
+        })
+        if(office != null && office.status === true){
+          await MOffice.update({
+            code: officeData.code,
+            status: officeData.status = false,
+          },
+          {
+            where: {SID: id, status: true }
+          })
+          responses.makeResponsesOk(res, "UDeleted")
+        }else {
+          responses.makeResponsesError(res, "UNotFound")
+        }
+    } catch (e) {
+      responses.makeResponsesException(res, e)
+    }
+  }
+  
 
 module.exports = {
     getAllOffices,
     getOfficeByID,
     createOffice,
     updateOffice,
-    deleteOffice
+    deleteOffice,
+    logicaldeloffice
 }
