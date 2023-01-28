@@ -124,7 +124,8 @@ async function updateUser (req, res){
       const user = await MUser.findOne({
         where: { UID: id }
       })
-      if(user != null){
+      
+      if(user != null && userData.password != null){
         await MUser.update({
           identification: userData.identification,
           name: userData.name,
@@ -139,6 +140,7 @@ async function updateUser (req, res){
           where: { UID: id }
         })
         responses.makeResponsesOk(res, "UUpdated")
+        
       }else {
         responses.makeResponsesError(res, "UNotFound")
       }

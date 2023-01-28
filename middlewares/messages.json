@@ -5,6 +5,7 @@
     "UDeleted": "User deleted",
     "ExistOffice": "Error, office code already exists",
     "ExistMedicine": "Error, medicine code already exists",
+    "Passwnnull": "Password can't be null",
     "UNotFound": "Error, user not found",
     "UFound": "Error, identification has been used",
     "UVoid": "Error, not data",
