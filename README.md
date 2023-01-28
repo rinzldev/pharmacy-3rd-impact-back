@@ -3,11 +3,11 @@ Project Laboratory II - Mitra APP
 
 ## Getting started ⚔️
 
-The application developed with React and Expo for the frontend and, Node.js and Express for the backend also makes use of other libraries that are necessary for the proper functioning of the practice in question. As for the Database Management System, Postgresql.
+The application developed with React for the frontend and, Node.js and Express for the backend also makes use of other libraries that are necessary for the proper functioning of the practice in question. As for the Database Management System, Postgresql.
 
 ### Prerequisites  📝
 
-* [Node.js](https://nodejs.org/en/) version 16.0.0 + 
+* [Node.js](https://nodejs.org/en/) version 16.0.0
 
 * [Postman](https://www.postman.com/) for HTTP requests.
 
