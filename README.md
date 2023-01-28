@@ -13,11 +13,13 @@ The application developed with React for the frontend and, Node.js and Express f
 
 * For the project, [Visual Studio Code](https://code.visualstudio.com/) was used as text editor for both frontend and backend, but any text editor can also be used.
 
-* [Posgres](https://www.postgresql.org/) as DBMS.
+* [Posgresql](https://www.postgresql.org/) as DBMS.
 
 
 ### Important Libs 📚
 * [Sequelize](https://www.npmjs.com/package/sequelize) version 6.28.0 as ORM
+
+* [bcrypt](https://www.npmjs.com/package/bcrypt) version 5.1.0
 
 * [Nodemon](https://www.npmjs.com/package/nodemon) Version 2.0.20
 
