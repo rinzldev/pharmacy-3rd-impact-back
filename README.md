@@ -7,17 +7,22 @@ The application developed with React and Expo for the frontend and, Node.js and 
 
 ### Prerequisites  📝
 
-* Node.js version 16.0.0
-
-* Nodemon Version 2.0.20
-
-* Express Version 4.18.2
+* [Node.js](https://nodejs.org/en/) version 16.0.0 + 
 
 * [Postman](https://www.postman.com/) for HTTP requests.
 
 * For the project, [Visual Studio Code](https://code.visualstudio.com/) was used as text editor for both frontend and backend, but any text editor can also be used.
 
-* [Posgres] as DBMS.
+* [Posgres](https://www.postgresql.org/) as DBMS.
+
+
+### Important Libs 📚
+* [Sequelize](https://www.npmjs.com/package/sequelize) version 6.28.0 as ORM
+
+* [Nodemon](https://www.npmjs.com/package/nodemon) Version 2.0.20
+
+* [Express](https://www.npmjs.com/package/express) Version 4.18.2
+
 
 ### Installation 🔧
 
