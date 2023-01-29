@@ -1,8 +1,7 @@
 # pharmacy-3rd-impact-back
 Project Laboratory II - Mitra APP
 
-![]("https://github.com/pharmacy-3rd-impact-back/https://media.tenor.com/I1XQf90sN5UAAAAd/aponia.gif")
-
+![Alt Text](https://media.tenor.com/QTUr_bOtXxoAAAAd/aponia-honkai-impact.gif)
 
 
 ## Getting started ⚔️
