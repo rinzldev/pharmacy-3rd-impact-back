@@ -1,7 +1,7 @@
 # pharmacy-3rd-impact-back
 Project Laboratory II - Mitra APP
 
- <img src="https://media.tenor.com/I1XQf90sN5UAAAAd/aponia.gif" alt="Aponia" width=400px height=400px >
+![]("https://media.tenor.com/I1XQf90sN5UAAAAd/aponia.gif")
 
 
 
