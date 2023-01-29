@@ -1,6 +1,6 @@
 # pharmacy-3rd-impact-back
 Project Laboratory II - Mitra APP
-![alt text](https://preview.redd.it/yffi28wqm3091.png?width=2000&format=png&auto=webp&v=enabled&s=f3a7ef14454a2e09a32fadc722dbc8b188b2c929)
+![alt text](https://preview.redd.it/yffi28wqm3091.png?width=2000&format=png&auto=webp&v=enabled&s=f3a7ef14454a2e09a32fadc722dbc8b188b2c929 | width=100)
 
 ## Getting started ⚔️
 
