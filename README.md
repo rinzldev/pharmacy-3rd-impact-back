@@ -1,6 +1,13 @@
 # pharmacy-3rd-impact-back
 Project Laboratory II - Mitra APP
-![alt text](https://upload-os-bbs.hoyolab.com/upload/2022/05/10/11424699/5c61e125075cad815927254171b449ad_8211287127075586276.png?x-oss-process=image%2Fquality%2Cq_80%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp)
+<div style="width: 60%; height: 60%">
+  
+  ![alt text](https://upload-os-bbs.hoyolab.com/upload/2022/05/10/11424699/5c61e125075cad815927254171b449ad_8211287127075586276.png?x-oss-process=image%2Fquality%2Cq_80%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp)
+
+  
+</div>
+
+
 
 ## Getting started ⚔️
 
