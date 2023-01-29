@@ -9,7 +9,7 @@ The application developed with React for the frontend and, Node.js and Express f
 
 * [Node.js](https://nodejs.org/en/) version 16.0.0
 
-* [Postman](https://www.postman.com/) for HTTP requests.
+* [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/) for HTTP requests.
 
 * For the project, [Visual Studio Code](https://code.visualstudio.com/) was used as text editor for both frontend and backend, but any text editor can also be used.
 
