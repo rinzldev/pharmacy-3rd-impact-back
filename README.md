@@ -1,5 +1,6 @@
 # pharmacy-3rd-impact-back
 Project Laboratory II - Mitra APP
+![alt text](https://images.alphacoders.com/124/1240606.jpg)
 
 ## Getting started ⚔️
 
