@@ -1,23 +1,28 @@
 # pharmacy-3rd-impact-back
 Project Laboratory II - Mitra APP
 
+<img src="https://upload-os-bbs.hoyolab.com/upload/2022/05/10/11424699/5c61e125075cad815927254171b449ad_8211287127075586276.png?x-oss-process=image%2Fquality%2Cq_80%2Fauto-orient%2C0%2Finterlace%2C1%2Fformat%2Cwebp" width=400px height=400px>
+
+
 ## Getting started ⚔️
 
-The application developed with React and Expo for the frontend and, Node.js and Express for the backend also makes use of other libraries that are necessary for the proper functioning of the practice in question. As for the Database Management System, Postgresql.
+The application developed with React for the frontend and, Node.js and Express for the backend also makes use of other libraries that are necessary for the proper functioning of the practice in question. As for the Database Management System, Postgresql.
 
 ### Prerequisites  📝
 
-* [Node.js](https://nodejs.org/en/) version 16.0.0 + 
+* [Node.js](https://nodejs.org/en/) version 16.0.0
 
-* [Postman](https://www.postman.com/) for HTTP requests.
+* [Postman](https://www.postman.com/) or [Insomnia](https://insomnia.rest/) for HTTP requests.
 
 * For the project, [Visual Studio Code](https://code.visualstudio.com/) was used as text editor for both frontend and backend, but any text editor can also be used.
 
-* [Posgres](https://www.postgresql.org/) as DBMS.
+* [Posgresql](https://www.postgresql.org/) as DBMS.
 
 
 ### Important Libs 📚
 * [Sequelize](https://www.npmjs.com/package/sequelize) version 6.28.0 as ORM
+
+* [bcrypt](https://www.npmjs.com/package/bcrypt) version 5.1.0
 
 * [Nodemon](https://www.npmjs.com/package/nodemon) Version 2.0.20
 
