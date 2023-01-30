@@ -36,7 +36,7 @@ async function getUserByID(req, res) {
     }
 }
 
-// Create User
+// create user
 async function createUser (req, res) {
 try {
   const userData = req.body
@@ -94,12 +94,16 @@ async function login (req, res) {
       
     })
     if(!userval) {
-      responses.makeResponsesError(res, 'Incorrect credentials', 'ULoginError1')
+      responses.makeResponsesError(res, 'ULoginError1')
+    }else if(userval === null){
+      responses.makeResponsesError(res, "Usernull")
     }
-    const passwval = await validate.comparePassword(req.body.password, userval.password)
 
+    const passwval = await validate.comparePassword(req.body.password, userval.password)
     if(!passwval) {
-      responses.makeResponsesError(res, 'Incorrect credentials', 'ULoginError2')
+      responses.makeResponsesError(res, 'ULoginError2')
+    }else if(passwval === null){
+      responses.makeResponsesError(res, "Passwnnull")
     }
 
     const secret = process.env.SECRET_KEY
@@ -109,7 +113,7 @@ async function login (req, res) {
       type: userval.type,
       token: token
     }
-    responses.makeResponsesOkData(res, user, 'Success')
+    responses.makeResponsesOk(res, 'ULogin')
 
   }catch(e){
     responses.makeResponsesError(res, e, 'UnexpectedError')
@@ -150,7 +154,7 @@ async function updateUser (req, res){
 }
 
 
-//Logical Delete User
+//logical delete user
 async function logicaldeluser(req, res){
   try {
     const id = req.params.id
@@ -182,7 +186,7 @@ async function logicaldeluser(req, res){
 }
 
 
-//Physical Delete User
+//physical delete user
 async function deleteUser (req, res) {
   try {
       const id = req.params.id

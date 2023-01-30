@@ -4,14 +4,17 @@ module.exports = (sequelize, Sequelize) => {
 	const Inventory = sequelize.define('Inventory',{
 		SID:{
 			type: Sequelize.INTEGER,
+			allowNull: false,
 			require: true
 		},
 		MID:{
 			type: Sequelize.INTEGER,
+			allowNull: false,
 			require: true
 		},
 		quantity:{
 			type: Sequelize.INTEGER,
+			allowNull: false,
 			require: true
 		},
 	},{

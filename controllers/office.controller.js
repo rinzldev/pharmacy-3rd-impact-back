@@ -3,6 +3,7 @@ const db = require('../db/db')
 const MOffice = db.offices
 const responses = require('../middlewares/responses')
 
+//get all offices
 async function getAllOffices (req, res) {
     try {
         const offices = await MOffice.findAll({
@@ -15,7 +16,7 @@ async function getAllOffices (req, res) {
     }
 }
 
-
+//Find office by id
 async function getOfficeByID (req, res) {
     try {
         const sid = req.params.id
@@ -29,6 +30,7 @@ async function getOfficeByID (req, res) {
     }
 }
 
+//Create Office
 async function createOffice (req, res) {
     try {
         const officeData = req.body
@@ -58,14 +60,14 @@ async function createOffice (req, res) {
                     status: officeData.status
                 })
             }
-                responses.makeResponsesOk(res, "Success")
+                responses.makeResponsesOk(res, "OfficeCreated")
         }
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
 }
 
-
+//update office
 async function updateOffice (req, res) {
     try {
         const id = req.params.id
@@ -81,15 +83,16 @@ async function updateOffice (req, res) {
             {
               where: {SID: id}
             })
-            responses.makeResponsesOk(res, "UUpdated")
+            responses.makeResponsesOk(res, "OfficeUpdated")
         }else {
-            responses.makeResponsesError(res, "UNotFound")
+            responses.makeResponsesError(res, "OfficeNotFound")
         }
     } catch (e) {
         responses.makeResponsesException(res, e)
     }
 }
-    
+
+//physical delete office
 async function deleteOffice (req, res) {
     try {
         const id = req.params.id
@@ -101,16 +104,17 @@ async function deleteOffice (req, res) {
             {
             where: {SID: id }
             })
-            responses.makeResponsesOk(res, "UDeleted")
+            responses.makeResponsesOk(res, "OfficeDeleted")
             
         }else {
-            responses.makeResponsesError(res, "UNotFound")
+            responses.makeResponsesError(res, "OfficeNotFound")
         }
         } catch (e) {
         responses.makeResponsesException(res, e)
     }
 }
-      
+
+//logical delete office
 async function logicaldeloffice(req, res){
     try {
       const id = req.params.id
@@ -126,9 +130,9 @@ async function logicaldeloffice(req, res){
           {
             where: {SID: id, status: true }
           })
-          responses.makeResponsesOk(res, "UDeleted")
+          responses.makeResponsesOk(res, "OfficeDeleted")
         }else {
-          responses.makeResponsesError(res, "UNotFound")
+          responses.makeResponsesError(res, "OfficeNotFound")
         }
     } catch (e) {
       responses.makeResponsesException(res, e)

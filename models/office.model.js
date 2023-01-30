@@ -9,10 +9,13 @@ module.exports = (sequelize, Sequelize) => {
 		},
 		code:{
 			type: Sequelize.STRING(50),
+			allowNull: false,
+			unique: true,
 			require: true
 		},
 		status:{
 			type: Sequelize.BOOLEAN,
+			allowNull: false,
 			require: true
 		},
 	},{
