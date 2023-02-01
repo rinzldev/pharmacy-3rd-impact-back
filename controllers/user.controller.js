@@ -39,7 +39,7 @@ async function getUserByID(req, res) {
 //testing
 async function getUserByIdentification(req, res) {
   try {
-    const uident = req.params.id
+    const uident = req.params.identification
     const user = await MUser.findOne({
       where: { identification: uident, status: true } 
     })

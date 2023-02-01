@@ -33,7 +33,7 @@ async function getMedicineByID (req, res) {
 //testing 
 async function getMedicineByCode(req, res) {
     try {
-      const medicinecode = req.params.id
+      const medicinecode = req.params.code
       const medicine = await MMedicine.findOne({
         where: { code: medicinecode, status: true } 
       })

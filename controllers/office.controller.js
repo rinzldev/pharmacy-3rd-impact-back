@@ -33,7 +33,7 @@ async function getOfficeByID (req, res) {
 //testing
 async function getOfficeByCode(req, res) {
   try {
-    const officecode = req.params.id
+    const officecode = req.params.code
     const office = await MOffice.findOne({
       where: { code: officecode, status: true } 
     })
