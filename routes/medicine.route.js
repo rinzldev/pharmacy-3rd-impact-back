@@ -4,7 +4,7 @@ const cMedicine = require('../controllers/medicine.controller')
 
 router.get('/', cMedicine.getAllMedicines)
 router.get('/:id', cMedicine.getMedicineByID)
-router.get('/search-code/:code', cMedicine.getMedicineByCode)
+router.get('/search-code/:id', cMedicine.getMedicineByCode)
 router.post('/', cMedicine.createMedicine)
 router.put('/:id', cMedicine.updateMedicine)
 router.delete('/DeleteForever/:id', cMedicine.deleteMedicine)
