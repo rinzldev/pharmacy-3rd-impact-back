@@ -30,6 +30,25 @@ async function getMedicineByID (req, res) {
     }
 }
 
+//testing 
+async function getMedicineByCode(req, res) {
+    try {
+      const medicinecode = req.params.id
+      const medicine = await MMedicine.findOne({
+        where: { code: medicinecode, status: true } 
+      })
+  
+      if(user != null)
+        responses.makeResponsesOk(res, user, "Success")
+      else
+        responses.makeResponsesError(res, "MedicineNotfound")
+    } catch (e) {
+      responses.makeResponsesException(res, e)
+    }
+  }
+  
+
+
 //create medicine
 async function createMedicine (req, res) {
     try {
@@ -156,4 +175,5 @@ module.exports = {
     updateMedicine,
     logicaldelMedicine,
     deleteMedicine,
+    getMedicineByCode
 }

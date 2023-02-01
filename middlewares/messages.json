@@ -15,6 +15,7 @@
     "InventoryCreated": "the medicine has been successfully created.",
     "InventoryUpdated": "the medicine has been successfully updated",
     "InventoryDeleted": "the medicine has been successfully deleted",
+    "InventoryNotFound": "Error, inventory not found",
 
     "UCreated": "User has been successfully created",
     "UUpdated": "User has been successfully updated",

@@ -17,6 +17,11 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 			require: true
 		},
+		createdAt: {
+			type: "TIMESTAMP",
+			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			allowNull: false,
+		}
 	},{
 		timestamps: false
 	})

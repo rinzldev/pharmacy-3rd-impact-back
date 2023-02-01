@@ -30,6 +30,26 @@ async function getOfficeByID (req, res) {
     }
 }
 
+//testing
+async function getOfficeByCode(req, res) {
+  try {
+    const officecode = req.params.id
+    const office = await MOffice.findOne({
+      where: { code: officecode, status: true } 
+    })
+
+    if(user != null)
+      responses.makeResponsesOk(res, user, "Success")
+    else
+      responses.makeResponsesError(res, "OfficeNotFound")
+  } catch (e) {
+    responses.makeResponsesException(res, e)
+  }
+}
+
+
+
+
 //Create Office
 async function createOffice (req, res) {
     try {
@@ -146,5 +166,6 @@ module.exports = {
     createOffice,
     updateOffice,
     deleteOffice,
-    logicaldeloffice
+    logicaldeloffice,
+    getOfficeByCode
 }

@@ -36,6 +36,25 @@ async function getUserByID(req, res) {
     }
 }
 
+//testing
+async function getUserByIdentification(req, res) {
+  try {
+    const uident = req.params.id
+    const user = await MUser.findOne({
+      where: { identification: uident, status: true } 
+    })
+
+    if(user != null)
+      responses.makeResponsesOk(res, user, "Success")
+    else
+      responses.makeResponsesError(res, "UNotFound")
+  } catch (e) {
+    responses.makeResponsesException(res, e)
+  }
+}
+
+
+
 // create user
 async function createUser (req, res) {
 try {
@@ -216,5 +235,6 @@ module.exports = {
     login,
     updateUser,
     deleteUser,
-    logicaldeluser
+    logicaldeluser,
+    getUserByIdentification
 }
