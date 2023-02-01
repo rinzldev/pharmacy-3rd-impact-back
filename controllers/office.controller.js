@@ -21,7 +21,11 @@ async function getOfficeByID (req, res) {
     try {
         const sid = req.params.id
         const office = await MOffice.findOne({
-        where: { SID: sid, status: true } 
+        where: { 
+          [Op.or]: [
+          {   SID: sid },
+          { code: sid }
+        ], status: true } 
       })
       
     responses.makeResponsesOkData(res, office, "Success")
