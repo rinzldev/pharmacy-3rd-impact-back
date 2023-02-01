@@ -4,7 +4,7 @@ const cOffice = require('../controllers/office.controller')
 
 router.get('/', cOffice.getAllOffices)
 router.get('/:id', cOffice.getOfficeByID)
-router.get('/search-code/:id', cOffice.getOfficeByCode)
+router.get('/search-code/:code', cOffice.getOfficeByCode)
 router.post('/', cOffice.createOffice)
 router.put('/:id', cOffice.updateOffice)
 router.delete('/DeleteForever/:id', cOffice.deleteOffice)
