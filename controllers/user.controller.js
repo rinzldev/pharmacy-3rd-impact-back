@@ -135,9 +135,10 @@ async function login (req, res) {
     const secret = process.env.SECRET_KEY
     const token = jwt.sign({id: userval._id,}, secret, {expiresIn: '1w'})
     const user = {
-      id: userval._id,
+      id: userval.UID,
+      name: userval.name,
       type: userval.type,
-      token: token
+      token:token
     }
     responses.makeResponsesOkData(res, user, 'ULogin')
 
