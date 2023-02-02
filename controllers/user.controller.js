@@ -133,7 +133,7 @@ async function login (req, res) {
     }
 
     const secret = process.env.SECRET_KEY
-    const token = jwt.sign({id: userval._id,}, secret, {expiresIn: '1w'})
+    const token = jwt.sign({id: userval.id,}, secret, {expiresIn: '1w'})
     const user = {
       id: userval.UID,
       name: userval.name,
