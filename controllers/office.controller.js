@@ -1,7 +1,9 @@
 'use strict'
 const db = require('../db/db')
 const MOffice = db.offices
+const { Op } = require("sequelize")
 const responses = require('../middlewares/responses')
+
 
 //get all offices
 async function getAllOffices (req, res) {
@@ -18,40 +20,26 @@ async function getAllOffices (req, res) {
 
 //Find office by id
 async function getOfficeByID (req, res) {
-    try {
-        const sid = req.params.id
-        const office = await MOffice.findOne({
-        where: { 
-          [Op.or]: [
-          {   SID: sid },
-          { code: sid }
-        ], status: true } 
-      })
-      
-    responses.makeResponsesOkData(res, office, "Success")
-    } catch (e) {
-    responses.makeResponsesException(res, e)
-    }
-}
-
-//testing
-async function getOfficeByCode(req, res) {
   try {
-    const officecode = req.params.code
+    const sid = req.params.id
     const office = await MOffice.findOne({
-      where: { code: officecode, status: true } 
-    })
-
-    if(user != null)
-      responses.makeResponsesOk(res, user, "Success")
+      where: 
+      { 
+        [Op.or]: [
+          { SID: sid },
+          { code: sid }
+        ],
+        status: true 
+      } 
+    }) 
+    if(office != null)
+      responses.makeResponsesOkData(res,office, "Success")
     else
       responses.makeResponsesError(res, "OfficeNotFound")
   } catch (e) {
     responses.makeResponsesException(res, e)
   }
 }
-
-
 
 
 //Create Office
@@ -171,5 +159,4 @@ module.exports = {
     updateOffice,
     deleteOffice,
     logicaldeloffice,
-    getOfficeByCode
 }

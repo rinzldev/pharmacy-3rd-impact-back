@@ -4,7 +4,6 @@ const auth = require('../middlewares/authotization')
 
 router.get('/',  cUser.getAllUsers)
 router.get('/:id',  cUser.getUserByID)
-router.get('/search-iden/:id',  cUser.getUserByIdentification)
 router.post('/', cUser.createUser)
 router.put('/:id', cUser.updateUser)
 router.delete('/DeleteForever/:id', cUser.deleteUser)

@@ -2,6 +2,7 @@
 const db = require('../db/db')
 const MMedicine = db.medicines
 const responses = require('../middlewares/responses')
+const { Op } = require("sequelize")
 
 //get all medicine
 async function getAllMedicines (req, res) {
@@ -21,32 +22,24 @@ async function getMedicineByID (req, res) {
     try {
         const mid = req.params.id
         const medicine = await MMedicine.findOne({
-        where: { MID: mid, status: true } 
-      })
-      
-    responses.makeResponsesOkData(res, medicine, "Success")
-    } catch (e) {
-    responses.makeResponsesException(res, e)
+          where: 
+          { 
+            [Op.or]: [
+              { MID: mid },
+              { code: mid }
+            ],
+            status: true 
+          } 
+        }) 
+        if(medicine != null)
+          responses.makeResponsesOkData(res,medicine, "Success")
+        else
+          responses.makeResponsesError(res, "MedicineNotfound")
+      } catch (e) {
+        responses.makeResponsesException(res, e)
+      }
     }
-}
-
-//testing 
-async function getMedicineByCode(req, res) {
-    try {
-      const medicinecode = req.params.code
-      const medicine = await MMedicine.findOne({
-        where: { code: medicinecode, status: true } 
-      })
-  
-      if(user != null)
-        responses.makeResponsesOk(res, user, "Success")
-      else
-        responses.makeResponsesError(res, "MedicineNotfound")
-    } catch (e) {
-      responses.makeResponsesException(res, e)
-    }
-  }
-  
+       
 
 
 //create medicine
@@ -175,5 +168,4 @@ module.exports = {
     updateMedicine,
     logicaldelMedicine,
     deleteMedicine,
-    getMedicineByCode
 }

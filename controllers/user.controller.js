@@ -5,6 +5,7 @@ const responses = require('../middlewares/responses')
 const validate = require('../middlewares/validate')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const { Op } = require("sequelize")
 
 // get all users
 async function getAllUsers (req, res) {
@@ -24,11 +25,17 @@ async function getUserByID(req, res) {
     try {
       const uid = req.params.id
       const user = await MUser.findOne({
-        where: { UID: uid, status: true } 
-      })
-
+        where: 
+        { 
+          [Op.or]: [
+            { UID: uid },
+            { identification: uid }
+          ],
+          status: true 
+        } 
+      }) 
       if(user != null)
-        responses.makeResponsesOk(res, user, "Success")
+        responses.makeResponsesOkData(res,user, "Success")
       else
         responses.makeResponsesError(res, "UNotFound")
     } catch (e) {
@@ -236,5 +243,4 @@ module.exports = {
     updateUser,
     deleteUser,
     logicaldeluser,
-    getUserByIdentification
 }
