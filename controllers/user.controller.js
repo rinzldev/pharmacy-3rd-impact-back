@@ -139,7 +139,7 @@ async function login (req, res) {
       type: userval.type,
       token: token
     }
-    responses.makeResponsesOkData(res, login, 'ULogin')
+    responses.makeResponsesOkData(res, user, 'ULogin')
 
   }catch(e){
     responses.makeResponsesError(res, e, 'UnexpectedError')
