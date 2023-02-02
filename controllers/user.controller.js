@@ -164,7 +164,6 @@ async function updateUser (req, res){
           mail: userData.mail,
           phone:  userData.phone,
           type: userData.type,
-          password: bcrypt.hashSync(userData.password),
           status: userData.status,
         },
         {
