@@ -97,7 +97,7 @@ async function updateMedicine (req, res) {
                 code: medicineData.code,
                 desc: medicineData.desc,
                 presentation: medicineData.presentation,
-                status: medicineData.status,
+                status: false,
             },
             {
                 where: { MID: id }

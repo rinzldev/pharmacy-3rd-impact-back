@@ -10,7 +10,8 @@ module.exports = (sequelize, Sequelize) => {
 		code:{
 			type: Sequelize.STRING(15),
 			allowNull: false,
-			unique:true
+			unique:true,
+			require: true
 		},
 		desc:{
 			type: Sequelize.STRING(100),
