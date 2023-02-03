@@ -48,7 +48,7 @@ async function createMedicine (req, res) {
         const medicineData = req.body
         const existmedicine = await MMedicine.findOne({ where:{
             code: medicineData.code,
-            status: medicineData.status
+            status: true
         }   
         })
         if(existmedicine){
