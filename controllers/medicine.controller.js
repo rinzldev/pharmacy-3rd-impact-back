@@ -2,7 +2,9 @@
 const db = require('../db/db')
 const MMedicine = db.medicines
 const responses = require('../middlewares/responses')
+const { Op } = require("sequelize")
 
+//get all medicine
 async function getAllMedicines (req, res) {
     try {
         const medicines = await MMedicine.findAll({
@@ -15,35 +17,74 @@ async function getAllMedicines (req, res) {
     }
 }
 
+//Find medicine by id
 async function getMedicineByID (req, res) {
     try {
         const mid = req.params.id
         const medicine = await MMedicine.findOne({
-        where: { MID: mid, status: true } 
-      })
-      
-    responses.makeResponsesOkData(res, medicine, "Success")
-    } catch (e) {
-    responses.makeResponsesException(res, e)
+          where: 
+          { 
+            [Op.or]: [
+              { MID: mid },
+              { code: mid }
+            ],
+            status: true 
+          } 
+        }) 
+        if(medicine != null)
+          responses.makeResponsesOkData(res,medicine, "Success")
+        else
+          responses.makeResponsesError(res, "MedicineNotfound")
+      } catch (e) {
+        responses.makeResponsesException(res, e)
+      }
     }
-}
+       
 
+
+//create medicine
 async function createMedicine (req, res) {
     try {
-        let medicineData = req.body
-        await MMedicine.create({  
-          code: medicineData.code,
-          desc: medicineData.desc,
-          presentation: medicineData.presentation,
-          status: medicineData.status,
+        const medicineData = req.body
+        const existmedicine = await MMedicine.findOne({ where:{
+            code: medicineData.code,
+            status: true
+        }   
         })
-        responses.makeResponsesOk(res, "Success")
+        if(existmedicine){
+            responses.makeResponsesError(res,"ExistMedicine")
+        }else{
+            const FMedicine = await MMedicine.findOne({where: {
+                code: medicineData.code,
+                status: false
+            }})
+            if (FMedicine){
+                await MMedicine.update({
+                    code: medicineData.code,
+                    desc: medicineData.desc,
+                    presentation: medicineData.presentation,
+                    status: true
+                },
+                {
+                    where: {MID: FMedicine.MID}
+                })
+            }
+            else{
+                await MMedicine.create({
+                    code: medicineData.code,
+                    desc: medicineData.desc,
+                    presentation: medicineData.presentation,
+                    status: true
+                })
+            }
+            responses.makeResponsesOk(res, "MedicineCreated")
+        }
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
 }
 
-
+// update medicine
 async function updateMedicine (req, res) {
     try {
         const id = req.params.id
@@ -56,20 +97,21 @@ async function updateMedicine (req, res) {
                 code: medicineData.code,
                 desc: medicineData.desc,
                 presentation: medicineData.presentation,
-                status: medicineData.status,
+                status: false,
             },
             {
                 where: { MID: id }
             })
-            responses.makeResponsesOk(res, "UUpdated")
+            responses.makeResponsesOk(res, "MedicineUpdated")
             }else {
-            responses.makeResponsesError(res, "UNotFound")
+            responses.makeResponsesError(res, "MedicineNotfound")
         }
     } catch (e) {
         responses.makeResponsesException(res, e)
     }
 }
 
+//logical delete medicine
 async function logicaldelMedicine (req, res) {
     try {
         const id = req.params.id
@@ -87,16 +129,16 @@ async function logicaldelMedicine (req, res) {
             {
                 where: { MID: id }
             })
-            responses.makeResponsesOk(res, "UUpdated")
+            responses.makeResponsesOk(res, "MedicineDeleted")
             }else {
-            responses.makeResponsesError(res, "UNotFound")
+            responses.makeResponsesError(res, "MedicineNotfound")
         }
     } catch (e) {
         responses.makeResponsesException(res, e)
     }
 }
 
-
+//physical delete medicine
 async function deleteMedicine (req, res) {
     try {
         const id = req.params.id
@@ -108,9 +150,9 @@ async function deleteMedicine (req, res) {
             {
             where: { MID: id }
           })
-          responses.makeResponsesOk(res, "UDeleted")      
+          responses.makeResponsesOk(res, "MedicineDeleted")      
         }else {
-          responses.makeResponsesError(res, "UNotFound")
+          responses.makeResponsesError(res, "MedicineNotfound")
         }
     } catch (e) {
       responses.makeResponsesException(res, e)

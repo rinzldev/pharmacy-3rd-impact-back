@@ -9,16 +9,24 @@ module.exports = (sequelize, Sequelize) => {
 		},
 		code:{
 			type: Sequelize.STRING(15),
-			unique:true
+			allowNull: false,
+			unique:true,
+			require: true
 		},
 		desc:{
-			type: Sequelize.STRING(100)
+			type: Sequelize.STRING(100),
+			allowNull: false,
+			require: true
+			
 		},
 		presentation:{
-			type: Sequelize.STRING(100)
+			type: Sequelize.STRING(100),
+			allowNull: false,
+			require: true
 		},
 		status:{
-			type: Sequelize.BOOLEAN
+			type: Sequelize.BOOLEAN,
+			require: true
 		},
 	},{
 		timestamps: false
