@@ -193,6 +193,7 @@ async function logicaldeluser(req, res){
       })
       if(user != null && user.status === true){
         await MUser.update({
+          SID: userData.SID,
           identification: userData.identification,
           name: userData.name,
           lastName: userData.lastName,
@@ -200,7 +201,7 @@ async function logicaldeluser(req, res){
           phone:  userData.phone,
           type: userData.type,
           password: bcrypt.hashSync(userData.password),
-          status: userData.status = false,
+          status: false,
         },
         {
           where: {UID: id, status: true }
