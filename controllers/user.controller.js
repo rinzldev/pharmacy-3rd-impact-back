@@ -80,6 +80,7 @@ try {
       }})
       if (FUser) {
           await MUser.update({
+          SID: userData.SID,
           identification: userData.identification,
           name: userData.name,
           lastName: userData.lastName,
@@ -158,6 +159,7 @@ async function updateUser (req, res){
       
       if(user != null && userData.password != null){
         await MUser.update({
+          SID: userData.SID,
           identification: userData.identification,
           name: userData.name,
           lastName: userData.lastName,
