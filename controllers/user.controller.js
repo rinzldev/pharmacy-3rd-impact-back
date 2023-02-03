@@ -102,7 +102,7 @@ try {
           phone:  userData.phone,
           type: userData.type,
           password: bcrypt.hashSync(userData.password),
-          status: userData.status,
+          status: true,
         })
       }      
     responses.makeResponsesOk(res,"Success")
