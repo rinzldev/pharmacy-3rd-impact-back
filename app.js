@@ -39,7 +39,7 @@ app.use(authRoutes)
 
 
 app.get('/', (req, res) => {
-    res.send('Honkai 3rd Impact.')
+    res.send('El siguiente proyecto esta conectado a Mitra App v1.0.')
 })
 
 app.listen(port, () => {
