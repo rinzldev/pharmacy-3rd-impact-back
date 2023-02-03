@@ -1,5 +1,7 @@
 "use strict";
 const MInventory = require("../models/inventory.model");
+const MMedicine = require("../models/medicine.model");
+const MOffice = require("../models/inventory.model");
 const responses = require("../middlewares/responses");
 
 async function getAllInventories(req, res) {
@@ -48,6 +50,28 @@ async function updateInventory(req, res) {
   }
 }
 
+async function getallwithJoin(req, res) {
+  try{
+    const inventoryData = req.body
+    const inventories = await MInventory.findAll({
+      include: {
+        model: MOffice,
+        attributes: ["code"],
+        as: 'o',
+      },
+      include: {
+        model: MMedicine,
+        attributes: ["code","desc"],
+        as:"m",
+      }
+    });
+  responses.makeResponsesOkData(req, inventories, "Sucess")  
+    
+  }catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
 async function createInventory(req, res) {
   try {
     const inventoryData = req.body;
@@ -62,6 +86,8 @@ async function createInventory(req, res) {
     responses.makeResponsesException(res, e);
   }
 }
+
+
 
 module.exports = {
   getAllInventories,

@@ -69,7 +69,7 @@ async function createOffice (req, res) {
             else{
                 await MOffice.create({  
                     code: officeData.code,
-                    status: officeData.status
+                    status: true
                 })
             }
                 responses.makeResponsesOk(res, "OfficeCreated")

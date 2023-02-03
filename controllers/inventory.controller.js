@@ -2,14 +2,38 @@
 const MInventory = require("../models/inventory.model");
 const responses = require("../middlewares/responses");
 
+
+async function createInventory(req, res) {
+  try {
+    const inventoryData = req.body;
+    await MInventory.create({
+      SID: inventoryData.SID,
+      MID: inventoryData.MID,
+      quantity: inventoryData.quantity,
+      createtAt: Date.now(),
+    });
+    responses.makeResponsesOk(res, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+
+
+
+
 async function getAllInventories(req, res) {
   try {
-    const inventories = await MInventory.findAll({});
+    const inventories = await MInventory.findAll({
+        order: [['MID', 'asc']]
+    });
     responses.makeResponsesOkData(res, inventories, "Success");
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
 }
+
+
 
 async function getInventoryByOfficeID(req, res) {
   try {
@@ -18,6 +42,9 @@ async function getInventoryByOfficeID(req, res) {
     responses.makeResponsesException(res, e);
   }
 }
+
+
+
 
 async function getInventoryByMedicineID(req, res) {
   try {
@@ -48,20 +75,6 @@ async function updateInventory(req, res) {
   }
 }
 
-async function createInventory(req, res) {
-  try {
-    const inventoryData = req.body;
-    await MInventory.create({
-      SID: inventoryData.SID,
-      MID: inventoryData.MID,
-      quantity: inventoryData.quantity,
-      createtAt: Date.now(),
-    });
-    responses.makeResponsesOk(res, "Success");
-  } catch (e) {
-    responses.makeResponsesException(res, e);
-  }
-}
 
 // logical Delete
 async function logicaldelInventory(req, res){
@@ -117,6 +130,23 @@ async function deleteInventory (req, res) {
     }
   }
 
+  async function getallwithJoin(req, res) {
+    try{
+      const inventories = await MInventory.findAll({
+        include: {
+          model: MOffice,
+          as: 'o',
+          model: MMedicine,
+          as:"m"   
+        }
+      });
+      return inventories
+      
+    }catch (e) {
+      responses.makeResponsesException(res, e);
+    }
+  }
+
 module.exports = {
   getAllInventories,
   getInventoryByOfficeID,
@@ -125,4 +155,5 @@ module.exports = {
   createInventory,
   deleteInventory,
   logicaldelInventory,
+  getallwithJoin
 };

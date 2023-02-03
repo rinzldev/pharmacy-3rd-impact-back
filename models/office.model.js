@@ -15,7 +15,6 @@ module.exports = (sequelize, Sequelize) => {
 		},
 		status:{
 			type: Sequelize.BOOLEAN,
-			allowNull: false,
 			require: true
 		},
 	},{
