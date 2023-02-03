@@ -74,7 +74,7 @@ async function createMedicine (req, res) {
                     code: medicineData.code,
                     desc: medicineData.desc,
                     presentation: medicineData.presentation,
-                    status: medicineData.status
+                    status: true
                 })
             }
             responses.makeResponsesOk(res, "MedicineCreated")
