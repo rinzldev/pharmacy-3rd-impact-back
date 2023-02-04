@@ -17,8 +17,10 @@ const sequelize = new Sequelize(connString, {
 const db = {};
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
-db.users = require("../models/user.model")(sequelize, Sequelize);
-db.offices = require("../models/office.model")(sequelize, Sequelize);
-db.medicines = require("../models/medicine.model")(sequelize, Sequelize);
-db.invetories = require("../models/inventory.model")(sequelize, Sequelize);
+db.users = require("../models/user.model")(sequelize, Sequelize)
+db.offices = require("../models/office.model")(sequelize, Sequelize)
+db.medicines = require("../models/medicine.model")(sequelize, Sequelize)
+db.invetories = require("../models/inventory.model")(sequelize, Sequelize)
+db.laboratory = require("../models/laboratory.model")(sequelize, Sequelize)
+
 module.exports = db;

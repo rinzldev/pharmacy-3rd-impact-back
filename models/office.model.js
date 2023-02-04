@@ -13,6 +13,11 @@ module.exports = (sequelize, Sequelize) => {
 			unique: true,
 			require: true
 		},
+		name:{
+			type: Sequelize.STRING(40),
+			allowNull: false,
+			require: true
+		},
 		status:{
 			type: Sequelize.BOOLEAN,
 			require: true
@@ -23,7 +28,7 @@ module.exports = (sequelize, Sequelize) => {
 
 	Office.associate = function (models) {
 		Office.belongsTo(models.User, { foreignKey: 'SID' })
-		//Office.hasMany(models.Inventory, { foreignKey: 'SID' })
+		Office.hasMany(models.Inventory, { foreignKey: 'SID' })
 	}
 
 	return Office;

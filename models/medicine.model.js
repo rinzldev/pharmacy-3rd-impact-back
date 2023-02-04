@@ -7,17 +7,26 @@ module.exports = (sequelize, Sequelize) => {
 			autoIncrement: true,
 			primaryKey: true
 		},
+		LID:{
+			type: Sequelize.INTEGER,
+			allowNull: false,
+			require: true
+		},
 		code:{
 			type: Sequelize.STRING(15),
 			allowNull: false,
 			unique:true,
 			require: true
 		},
+		name:{
+			type: Sequelize.STRING(50),
+			allowNull: false,
+			require: true
+		},
 		desc:{
 			type: Sequelize.STRING(100),
 			allowNull: false,
-			require: true
-			
+			require: true	
 		},
 		presentation:{
 			type: Sequelize.STRING(100),
@@ -33,7 +42,8 @@ module.exports = (sequelize, Sequelize) => {
 	})
 
 	Medicine.associate = function (models) {
-		//Medicine.hasMany(models.Inventory, { foreignKey: 'MID' })
+		Medicine.hasMany(models.Inventory, { foreignKey: 'MID' })
+		Medicine.hasOne(models.Laboratory, { foreignKey: 'LID'})
 	}
 	
 	return Medicine;

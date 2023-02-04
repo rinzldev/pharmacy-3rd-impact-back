@@ -28,6 +28,7 @@
     "Usernull": "Error, user can't be null",
     "UNotFound": "Error, user not found",
     "UFound": "Error, user has been used",
-    "UVoid": "Error, not data"   
+    "UVoid": "Error, not data",
 
+    "AJA": "Aqui hay un error Oz"
 }

@@ -39,3 +39,9 @@ DB_PORT='5432'
 postgres://undefined:undefined@undefined:undefined/undefined?sslmode=disable
 
 localhost:3000/
+
+Para todos los casos, el body debe contener:
+código de sucursal, código de medicina, nombre del laboratorio, nombre de medicina, descripción medicina, presentación medicina, cantidad en inventario
+
+Búsqueda 1: Todas las medicinas en una sucursal (Buscar todos por sucursal)
+Búsqueda 2: Búsqueda particular por medicina, por sucursal (Buscar una medicina en una sucursal)

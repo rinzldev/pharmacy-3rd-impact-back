@@ -1,7 +1,8 @@
 "use strict";
-const MInventory = require("../models/inventory.model");
-const MMedicine = require("../models/medicine.model");
-const MOffice = require("../models/inventory.model");
+const db = require('../db/db')
+const MInventory = db.invetories
+const MMedicine = db.medicines
+const MOffice = db.offices
 const responses = require("../middlewares/responses");
 
 async function getAllInventories(req, res) {
