@@ -32,7 +32,7 @@ async function getLaboratoryByID(req, res) {
       } else {
         laboratory = await MLaboratory.findOne({
           where: {
-            [Op.or]: [{ LID: lid, status: true }, { RIF: lid }],
+            [Op.or]: [{ LID: lid, status: true }, { RIF: lid, status: true }],
           },
         });
       }
