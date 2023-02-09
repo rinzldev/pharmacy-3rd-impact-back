@@ -3,8 +3,9 @@
     "LaboratoryCreated": "the laboratory has been successfully created.",
     "LaboratoryUpdated": "the laboratory has been successfully updated",
     "LaboratoryDeleted": "the laboratory has been successfully deleted",
-    "ExistLaboratory": "Error, laboratory code already exists",
+    "ExistLaboratory": "Error, laboratory rif already exists",
     "LaboratoryNotfound": "Error, laboratory not found",
+    
     
     
     "OfficeCreated": "the office has been successfully created.",

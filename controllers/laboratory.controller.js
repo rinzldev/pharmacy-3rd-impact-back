@@ -70,7 +70,6 @@ async function getLaboratoryByID(req, res) {
 //     }
        
 
-
 //create laboratory
 async function createLaboratory (req, res) {
     try {
@@ -152,8 +151,14 @@ async function logicaldelLaboratoy(req, res) {
         const lid = req.params.id
             let laboratoryData = req.body
             const laboratory = await MLaboratory.findOne({
-                where: { LID: lid }
-            })
+                where: {
+                  [Op.or]: [
+                    { LID: lid },
+                    { RIF: lid }
+                  ],
+                  status: true
+                }
+              })
             if(laboratory != null){
             await MLaboratory.update({             
                 RIF: laboratoryData.RIF,
@@ -175,17 +180,24 @@ async function logicaldelLaboratoy(req, res) {
     }
 }
 
-//physical delete medicine
+//physical delete laboratory
 async function deleteLaboratory (req, res) {
     try {
         const lid = req.params.id
+        
         const laboratory = await MLaboratory.findOne({
-          where: { LID: lid }
-        })
+            where: {
+              [Op.or]: [
+                { LID: lid },
+                { RIF: lid }
+              ],
+              status: true
+            }
+          })
         if(laboratory != null){
           await MLaboratory.destroy(
             {
-            where: { LID: id }
+            where: { LID: lid }
           })
           responses.makeResponsesOk(res, "LaboratoryDeleted")      
         }else {
@@ -195,7 +207,6 @@ async function deleteLaboratory (req, res) {
       responses.makeResponsesException(res, e)
     }
 }
-
 
 
 module.exports = {

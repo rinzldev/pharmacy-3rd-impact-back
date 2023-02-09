@@ -6,7 +6,6 @@ const MOffice = db.offices
 const MLaboratory = db.laboratory
 const responses = require("../middlewares/responses")
 const { Op } = require("sequelize")
-const sequilize = require("sequelize")
 
 //get all inventories
 async function getAllInventories (req, res) {
