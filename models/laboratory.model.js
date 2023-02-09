@@ -32,7 +32,7 @@ module.exports = (sequelize, Sequelize) => {
 			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
 			allowNull: false,
 		},
-        Status: {
+        status: {
             type: Sequelize.BOOLEAN,
             require: true
         }

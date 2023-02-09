@@ -1,8 +1,8 @@
 "use strict";
-const db = require('../db/db')
-const MInventory = db.invetories
-const MMedicine = db.medicines
-const MOffice = db.offices
+const db = require("../db/db");
+const MInventory = db.invetories;
+const MMedicine = db.medicines;
+const MOffice = db.offices;
 const responses = require("../middlewares/responses");
 
 async function getAllInventories(req, res) {
@@ -33,16 +33,16 @@ async function getInventoryByMedicineID(req, res) {
 
 async function updateInventory(req, res) {
   try {
-    const inventoryData = req.body
-    
-    const current = inventoryData.currentValue
-    current = current - inventoryData.quantity
+    const inventoryData = req.body;
+
+    const current = inventoryData.currentValue;
+    current = current - inventoryData.quantity;
     await MInventory.create({
-        SID: inventoryData.SID,
-        MID: inventoryData.MID,
-        quantity: current,
-        createtAt: Date.now(),
-        });
+      SID: inventoryData.SID,
+      MID: inventoryData.MID,
+      quantity: current,
+      createtAt: Date.now(),
+    });
 
     // validacion de cantidad
     responses.makeResponsesOk(res, "Success");
@@ -51,27 +51,61 @@ async function updateInventory(req, res) {
   }
 }
 
-async function getallwithJoin(req, res) {
-  try{
-    const inventoryData = req.body
-    const inventories = await MInventory.findAll({
-      include: {
-        model: MOffice,
-        attributes: ["code"],
-        as: 'o',
-      },
-      include: {
-        model: MMedicine,
-        attributes: ["code","desc"],
-        as:"m",
-      }
+async function getInventoryByFilter(req, res) {
+  try {
+    const pag = req.query.pag;
+    const size = req.query.size;
+    const inventories = await db.Inventory.findAll({
+      limit: size,
+      offset: pag,
+      include: [
+        {
+          model: db.Office,
+          as: "office",
+        },
+        {
+          model: db.Medicine,
+          as: "medicine",
+          include: [
+            {
+              model: db.Laboratory,
+              as: "laboratory",
+            },
+          ],
+        },
+      ],
     });
-  responses.makeResponsesOkData(req, inventories, "Sucess")  
-    
-  }catch (e) {
+    responses.makeResponsesOkData(res, inventories, "Success");
+  } catch (e) {
     responses.makeResponsesException(res, e);
   }
 }
+
+
+async function getInventoryByFilter(req, res) {
+  try {
+    //const inventories = await sequilize.query(`SELECT * FROM public."Inventories" as I inner join public."Offices" as O on I."SID" = O."SID"`)
+    const pag = req.query.pag
+    const size = req.query.size
+    const inventories = await db.sequelize.query(`
+      SELECT i."IID", o."code", o."name", m."code", 
+      l."name", m."name", m."presentation", i."quantity"
+      FROM public."Inventories" as i
+      inner join public."Offices" as o on i."SID" = o."SID"
+      inner join public."Medicines" as m on i."MID" = m."MID"
+      inner join public."Laboratories" as l on m."LID" = l."LID"
+      limit ${size}
+      offset ${pag}
+    `)
+
+    responses.makeResponsesOkData(res, inventories, "Success");
+    //responses.makeResponsesOk(res, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+
 
 async function createInventory(req, res) {
   try {
@@ -87,8 +121,6 @@ async function createInventory(req, res) {
     responses.makeResponsesException(res, e);
   }
 }
-
-
 
 module.exports = {
   getAllInventories,

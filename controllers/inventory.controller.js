@@ -8,6 +8,36 @@ const responses = require("../middlewares/responses")
 const { Op } = require("sequelize")
 const sequilize = require("sequelize")
 
+//get all inventories
+async function getAllInventories (req, res) {
+  try {
+      const inventories = await MInventory.findAll({
+          order: [['MID', 'asc']]
+      })
+    responses.makeResponsesOkData(res, inventories, "Success")
+  } catch (e) {
+    responses.makeResponsesException(res, e)
+  }
+}
+
+//get inventory by ID
+async function getInventoryByID(req, res) {
+  try {
+    const iid = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: { IID: iid },
+    });
+    if (inventory != null){
+      responses.makeResponsesOkData(res, inventory, "Success");
+    }
+    else{
+      responses.makeResponsesError(res, "InventoryNotFound");
+    } 
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
 async function createInventory(req, res) {
   try {
     const inventoryData = req.body;
@@ -27,20 +57,6 @@ async function createInventory(req, res) {
       createtAt: Date.now(),
     });
     responses.makeResponsesOk(res, "Success");
-  } catch (e) {
-    responses.makeResponsesException(res, e);
-  }
-}
-
-async function getInventoryByID(req, res) {
-  try {
-    const iid = req.params.id;
-    const inventory = await MInventory.findOne({
-      where: { IID: iid },
-    });
-    if (inventory != null)
-      responses.makeResponsesOkData(res, inventory, "Success");
-    else responses.makeResponsesError(res, "InventoryNotFound");
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
@@ -69,29 +85,19 @@ async function getInventoryByFilter(req, res) {
   }
 }
 
-async function getAllInventories(req, res) {
-  try {
-    const inventories = await MInventory.findAll({
-      order: [["MID", "asc"]],
-    });
-    responses.makeResponsesOkData(res, inventories, "Success");
-  } catch (e) {
-    responses.makeResponsesException(res, e);
-  }
-}
 
-async function getInventoryByOfficeID(req, res) {
-  try {
-    const inventoryData = req.body;
-    const office = await MOffice.findOne({
-      where: { SID: inventoryData.SID },
-    });
-    if (office != null) responses.makeResponsesOkData(res, office, "Success");
-    else responses.makeResponsesError(res, "Nofurula");
-  } catch (e) {
-    responses.makeResponsesException(res, e);
-  }
-}
+// async function getAllInventories(req, res) {
+//   try {
+//     const inventories = await db.sequelize.query(`
+//     SELECT *
+// 	    FROM public."Inventories"
+//   `)
+//     responses.makeResponsesOkData(res, inventories, "Success");
+//   } catch (e) {
+//     responses.makeResponsesException(res, e);
+//   }
+// }
+
 
 async function getInventoryByMedicineID(req, res) {
   try {

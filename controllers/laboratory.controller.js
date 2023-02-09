@@ -4,37 +4,37 @@ const MLaboratory = db.laboratory
 const responses = require('../middlewares/responses')
 const { Op } = require("sequelize")
 
-//get all medicine
+//get all laboratories
 async function getAllLaboratory (req, res) {
     try {
-        const laboratories = await MLaboratory.findAll({
+        const Laboratories = await MLaboratory.findAll({
             where: { status: true },
             order: [['LID', 'asc']]
         })
-        responses.makeResponsesOkData(res, laboratories, "Success")
-      } catch (e) {
+        responses.makeResponsesOkData(res, Laboratories, "Success")
+    } catch (e) {
         responses.makeResponsesException(res, e)
-      }
     }
+}
     
 //Find medicine by id
-async function getMedicineByID (req, res) {
+async function getLaboratoryByID (req, res) {
     try {
-        const mid = req.params.id
-        const medicine = await MMedicine.findOne({
+        const lid = req.params.id
+        const laboratory = await MLaboratory.findOne({
           where: 
           { 
             [Op.or]: [
-              { MID: mid },
-              { code: mid }
+              { LID: lid },
+              { RIF: lid }
             ],
             status: true 
           } 
         }) 
-        if(medicine != null)
-          responses.makeResponsesOkData(res,medicine, "Success")
+        if(laboratory != null)
+          responses.makeResponsesOkData(res,laboratory, "Success")
         else
-          responses.makeResponsesError(res, "MedicineNotfound")
+          responses.makeResponsesError(res, "LaboratoryNotfound")
       } catch (e) {
         responses.makeResponsesException(res, e)
       }
@@ -163,5 +163,6 @@ async function deleteMedicine (req, res) {
 
 module.exports = {
     getAllLaboratory,
+    getLaboratoryByID
 
 }
