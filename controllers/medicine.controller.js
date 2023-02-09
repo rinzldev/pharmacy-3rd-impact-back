@@ -136,7 +136,7 @@ async function updateMedicine(req, res) {
           name: medicineData.name,
           desc: medicineData.desc,
           presentation: medicineData.presentation,
-          status: medicineData.status,
+          status: medicineData.status = true,
         },
         {
           where: { MID: id },
