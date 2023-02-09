@@ -146,27 +146,29 @@ async function updateLaboratory (req, res) {
     }
 }
 
-//logical delete medicine
-async function logicaldelMedicine (req, res) {
+//logical delete laboratory
+async function logicaldelLaboratoy(req, res) {
     try {
-        const id = req.params.id
-            let medicineData = req.body
-            const medicine = await MMedicine.findOne({
-                where: { MID: id }
+        const lid = req.params.id
+            let laboratoryData = req.body
+            const laboratory = await MLaboratory.findOne({
+                where: { LID: lid }
             })
-            if(medicine != null){
-            await MMedicine.update({             
-                code: medicineData.code,
-                desc: medicineData.desc,
-                presentation: medicineData.presentation,
-                status: medicineData.status = false,
+            if(laboratory != null){
+            await MLaboratory.update({             
+                RIF: laboratoryData.RIF,
+                name: laboratoryData.name,
+                address: laboratoryData.address,
+                phone: laboratoryData.phone,
+                createdAt: laboratoryData.createdAt,
+                status: false,
             },
             {
-                where: { MID: id }
+                where: { LID: lid }
             })
-            responses.makeResponsesOk(res, "MedicineDeleted")
+            responses.makeResponsesOk(res, "LaboratoryDeleted")
             }else {
-            responses.makeResponsesError(res, "MedicineNotfound")
+            responses.makeResponsesError(res, "LaboratoryNotfound")
         }
     } catch (e) {
         responses.makeResponsesException(res, e)
@@ -174,20 +176,20 @@ async function logicaldelMedicine (req, res) {
 }
 
 //physical delete medicine
-async function deleteMedicine (req, res) {
+async function deleteLaboratory (req, res) {
     try {
-        const id = req.params.id
-        const medicine = await MMedicine.findOne({
-          where: { MID: id }
+        const lid = req.params.id
+        const laboratory = await MLaboratory.findOne({
+          where: { LID: lid }
         })
-        if(medicine != null){
-          await MMedicine.destroy(
+        if(laboratory != null){
+          await MLaboratory.destroy(
             {
-            where: { MID: id }
+            where: { LID: id }
           })
-          responses.makeResponsesOk(res, "MedicineDeleted")      
+          responses.makeResponsesOk(res, "LaboratoryDeleted")      
         }else {
-          responses.makeResponsesError(res, "MedicineNotfound")
+          responses.makeResponsesError(res, "LaboratoryNotfound")
         }
     } catch (e) {
       responses.makeResponsesException(res, e)
@@ -200,5 +202,7 @@ module.exports = {
     getAllLaboratory,
     getLaboratoryByID,
     createLaboratory,
-    updateLaboratory
+    updateLaboratory,
+    logicaldelLaboratoy,
+    deleteLaboratory
 }

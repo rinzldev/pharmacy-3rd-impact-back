@@ -6,8 +6,8 @@ router.get('/', cLaboratory.getAllLaboratory)
 router.get('/:id', cLaboratory.getLaboratoryByID)
 router.post('/', cLaboratory.createLaboratory)
 router.put('/:id', cLaboratory.updateLaboratory)
-// router.delete('/DeleteForever/:id', cMedicine.deleteMedicine)
-// router.delete('/:id', cMedicine.logicaldelMedicine)
+router.delete('/DeleteForever/:id', cLaboratory.deleteLaboratory)
+router.delete('/:id', cLaboratory.logicaldelLaboratoy)
 
 
 
