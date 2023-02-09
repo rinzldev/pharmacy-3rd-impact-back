@@ -10,7 +10,7 @@ INSERT INTO public."Users"(
 
 INSERT INTO public."Users"(
 	"UID", "SID", identification, name, "lastName", mail, phone, type, password, status)
-	VALUES (3, 1, 555555, 'tavo', 'god', 'test@gmail.com', '555', 0, '1234', true);
+	VALUES (3, 5, 555555, 'tavo', 'god', 'test@gmail.com', '555', 0, '1234', true);
 
 INSERT INTO public."Users"(
 	"UID", "SID", identification, name, "lastName", mail, phone, type, password, status)
@@ -18,11 +18,11 @@ INSERT INTO public."Users"(
 
 INSERT INTO public."Users"(
 	"UID", "SID", identification, name, "lastName", mail, phone, type, password, status)
-	VALUES (4, 2, 56665, 'Dan', 'punpun', 'test3@gmail.com', '555', 1, '1234', true);
+	VALUES (5, 4, 56665, 'Dan', 'punpun', 'test3@gmail.com', '555', 1, '1234', true);
 
 INSERT INTO public."Users"(
 	"UID", "SID", identification, name, "lastName", mail, phone, type, password, status)
-	VALUES (4, 2, 56665, 'Simon', 'Honkai', 'test4@gmail.com', '555', 0, '1234', true);
+	VALUES (6, 3, 45458, 'Simon', 'Honkai', 'test4@gmail.com', '555', 0, '1234', true);
 
 
 
