@@ -32,6 +32,7 @@ async function getOfficeByID(req, res) {
     } else {
       office = await MOffice.findOne({
         where: {
+          //Check if something changes
           [Op.or]: [{ SID: sid, status: true }, { code: sid, status: true }],
         },
       });
