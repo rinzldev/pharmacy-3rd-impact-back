@@ -17,94 +17,129 @@ async function getAllLaboratory (req, res) {
     }
 }
     
-//Find medicine by id
-async function getLaboratoryByID (req, res) {
+//Find laboratory by id
+async function getLaboratoryByID(req, res) {
     try {
-        const lid = req.params.id
-        const laboratory = await MLaboratory.findOne({
-          where: 
-          { 
-            [Op.or]: [
-              { LID: lid },
-              { RIF: lid }
-            ],
-            status: true 
-          } 
-        }) 
-        if(laboratory != null)
-          responses.makeResponsesOkData(res,laboratory, "Success")
-        else
-          responses.makeResponsesError(res, "LaboratoryNotfound")
-      } catch (e) {
-        responses.makeResponsesException(res, e)
+      const lid = req.params.id;
+      let laboratory = null;
+      if (isNaN(lid)) {
+        laboratory = await MLaboratory.findOne({
+          where: {
+            RIF: lid,
+            status: true,
+          },
+        });
+      } else {
+        laboratory = await MLaboratory.findOne({
+          where: {
+            [Op.or]: [{ LID: lid, status: true }, { RIF: lid }],
+          },
+        });
       }
+      if (laboratory != null) {
+        responses.makeResponsesOkData(res, laboratory, "Success");
+      } else {
+        responses.makeResponsesError(res, "LaboratoryNotfound");
+      }
+    } catch (e) {
+      responses.makeResponsesException(res, e);
     }
+  }
+  
+//version 2 
+// async function getLaboratoryByID (req, res) {
+//     try {
+//         const lid = req.params.id
+//         const laboratory = await MLaboratory.findOne({
+//           where: 
+//           { 
+//             [Op.or]: [
+//               { LID: lid },
+//               { RIF: lid }
+//             ],
+//             status: true 
+//           } 
+//         }) 
+//         if(laboratory != null)
+//           responses.makeResponsesOkData(res,laboratory, "Success")
+//         else
+//           responses.makeResponsesError(res, "LaboratoryNotfound")
+//       } catch (e) {
+//         responses.makeResponsesException(res, e)
+//       }
+//     }
        
 
 
-//create medicine
-async function createMedicine (req, res) {
+//create laboratory
+async function createLaboratory (req, res) {
     try {
-        const medicineData = req.body
-        const existmedicine = await MMedicine.findOne({ where:{
-            code: medicineData.code,
+        const laboratoryData = req.body
+        const existlaboratory = await MLaboratory.findOne({ where:{
+            RIF: laboratoryData.RIF,
             status: true
         }   
         })
-        if(existmedicine){
-            responses.makeResponsesError(res,"ExistMedicine")
+        if(existlaboratory){
+            responses.makeResponsesError(res,"ExistLaboratory")
         }else{
-            const FMedicine = await MMedicine.findOne({where: {
-                code: medicineData.code,
+            const FLaboratory = await MLaboratory.findOne({where: {
+                RIF: laboratoryData.RIF,
                 status: false
             }})
-            if (FMedicine){
-                await MMedicine.update({
-                    code: medicineData.code,
-                    desc: medicineData.desc,
-                    presentation: medicineData.presentation,
+            if (FLaboratory){
+                await MLaboratory.update({
+                    RIF: laboratoryData.RIF,
+                    name: laboratoryData.name,
+                    address: laboratoryData.address,
+                    phone: laboratoryData.phone,
+                    createdAt: laboratoryData.createdAt,
                     status: true
                 },
                 {
-                    where: {MID: FMedicine.MID}
+                    where: {LID: FLaboratory.LID}
                 })
             }
             else{
-                await MMedicine.create({
-                    code: medicineData.code,
-                    desc: medicineData.desc,
-                    presentation: medicineData.presentation,
+                await MLaboratory.create({
+                    RIF: laboratoryData.RIF,
+                    name: laboratoryData.name,
+                    address: laboratoryData.address,
+                    phone: laboratoryData.phone,
+                    createdAt: laboratoryData.createdAt,
                     status: true
                 })
             }
-            responses.makeResponsesOk(res, "MedicineCreated")
+            responses.makeResponsesOk(res, "LaboratoryCreated")
         }
     } catch (e) {
     responses.makeResponsesException(res, e)
     }
 }
 
-// update medicine
-async function updateMedicine (req, res) {
+// update laboratory
+async function updateLaboratory (req, res) {
     try {
         const id = req.params.id
-            let medicineData = req.body
-            const medicine = await MMedicine.findOne({
-                where: { MID: id }
+            let laboratoryData = req.body
+            const laboratory = await MLaboratory.findOne({
+                where: { LID: id }
             })
-            if(medicine != null){
-            await MMedicine.update({             
-                code: medicineData.code,
-                desc: medicineData.desc,
-                presentation: medicineData.presentation,
-                status: false,
+            if(laboratory != null){
+            await MLaboratory.update({             
+                RIF: laboratoryData.RIF,
+                name: laboratoryData.name,
+                address: laboratoryData.address,
+                phone: laboratoryData.phone,
+                createdAt: laboratoryData.createdAt,
+                status: laboratoryData.status,
             },
             {
-                where: { MID: id }
+                where: { LID: id }
             })
-            responses.makeResponsesOk(res, "MedicineUpdated")
+            responses.makeResponsesOk(res, "LaboratoryUpdated")
             }else {
-            responses.makeResponsesError(res, "MedicineNotfound")
+            responses.makeResponsesError(res, "LaboratoryNotfound")
         }
     } catch (e) {
         responses.makeResponsesException(res, e)
@@ -163,6 +198,7 @@ async function deleteMedicine (req, res) {
 
 module.exports = {
     getAllLaboratory,
-    getLaboratoryByID
-
+    getLaboratoryByID,
+    createLaboratory,
+    updateLaboratory
 }

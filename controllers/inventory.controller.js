@@ -54,7 +54,7 @@ async function createInventory(req, res) {
       SID: inventoryData.SID,
       MID: inventoryData.MID,
       quantity: inventoryData.quantity,
-      createtAt: Date.now(),
+      createtAt: laboratoryData.createdAt,
     });
     responses.makeResponsesOk(res, "Success");
   } catch (e) {
