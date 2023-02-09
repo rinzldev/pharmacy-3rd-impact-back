@@ -32,7 +32,7 @@ async function getOfficeByID(req, res) {
     } else {
       office = await MOffice.findOne({
         where: {
-          [Op.or]: [{ SID: sid, status: true }, { code: sid }],
+          [Op.or]: [{ SID: sid, status: true }, { code: sid, status: true }],
         },
       });
     }
@@ -125,7 +125,7 @@ async function updateOffice(req, res) {
         {
           code: officeData.code,
           name: officeData.name,
-          status: officeData.status,
+          status: true,
         },
         {
           where: { SID: id },

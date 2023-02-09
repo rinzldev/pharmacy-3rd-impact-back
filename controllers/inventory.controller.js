@@ -63,19 +63,19 @@ async function createInventory(req, res) {
 
 async function getInventoryByFilter(req, res) {
   try {
-    const inventories = await sequilize.query(`SELECT * FROM public."Inventories" as I inner join public."Offices" as O on I."SID" = O."SID"`)
+    //const inventories = await sequilize.query(`SELECT * FROM public."Inventories" as I inner join public."Offices" as O on I."SID" = O."SID"`)
     const pag = req.query.pag
     const size = req.query.size
-    // const inventories = await db.sequelize.query(`
-    //   SELECT i."IID", o."code", o."name", m."code", 
-    //   l."name", m."name", m."presentation", i."quantity"
-    //   FROM public."Inventories" as i
-    //   inner join public."Offices" as o on i."SID" = o."SID"
-    //   inner join public."Medicines" as m on i."MID" = m."MID"
-    //   inner join public."Laboratories" as l on m."LID" = l."LID"
-    //   limit ${size}
-    //   offset ${pag}
-    // `)
+    const inventories = await db.sequelize.query(`
+      SELECT i."IID", o."code", o."name", m."code", 
+      l."name", m."name", m."presentation", i."quantity"
+      FROM public."Inventories" as i
+      inner join public."Offices" as o on i."SID" = o."SID"
+      inner join public."Medicines" as m on i."MID" = m."MID"
+      inner join public."Laboratories" as l on m."LID" = l."LID"
+      limit ${size}
+      offset ${pag}
+    `)
 
     responses.makeResponsesOkData(res, inventories, "Success");
     //responses.makeResponsesOk(res, "Success");
