@@ -113,17 +113,17 @@ async function getInventoryList(req, res) {
     const mcode = req.body.mc;
     const inventories = await db.sequelize.query(
       `
-  SELECT i."IID", o."code" as "ocode", o."name" as "oname", m."code" as "mcode", 
-  l."name" as "lname", m."name" as "mname", m."presentation", i."quantity"
-  FROM public."Inventories" as i
-  INNER JOIN public."Offices" as o on i."SID" = o."SID"
-  INNER JOIN public."Medicines" as m on i."MID" = m."MID"
-  INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
-  WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
-  ORDER BY i."IID" ASC
-  limit ${size}
-  offset ${offset}
-`,
+        SELECT i."IID", o."code" as "ocode", o."name" as "oname", m."code" as "mcode", 
+        l."name" as "lname", m."name" as "mname", m."presentation", i."quantity"
+        FROM public."Inventories" as i
+        INNER JOIN public."Offices" as o on i."SID" = o."SID"
+        INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+        INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+        WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+        ORDER BY i."IID" ASC
+        limit ${size}
+        offset ${offset}
+      `,
       { type: db.sequelize.QueryTypes.SELECT }
     );
 
