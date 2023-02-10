@@ -1,54 +1,283 @@
-'use strict'
-const MInventory = require('../models/inventory.model')
-const responses = require('../middlewares/responses')
+"use strict";
+const db = require("../db/db");
+const MInventory = db.invetories;
+const MMedicine = db.medicines;
+const MOffice = db.offices;
+const responses = require("../middlewares/responses");
+const { Op } = require("sequelize");
 
-async function getAllInventories (req, res) {
-    try {
-        const inventories = await MInventory.findAll({
-            order: [['SID', 'asc']]
-        })
-      responses.makeResponseOkData(res, inventories, "Success")
-    } catch (e) {
-      responses.makeResponsesException(res, e)
-    }
+//get all inventories
+async function getAllInventories(req, res) {
+  try {
+    const inventories = await MInventory.findAll({
+      where: { quantity: { [Op.gte]: 0 } },
+      order: [["IID", "asc"]],
+    });
+
+    responses.makeResponsesOkData(res, inventories, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
   }
+}
 
-  async function getInventoryByOfficeID (req, res) {
-      try {
-      responses.makeResponseOkData(res, inventories, "Success")
-      } catch (e) {
-      responses.makeResponsesException(res, e)
+//get inventory by ID
+async function getInventoryByID(req, res) {
+  try {
+    const iid = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: { IID: iid, quantity: { [Op.gte]: 0 } },
+    });
+    if (inventory != null) {
+      responses.makeResponsesOkData(res, inventory, "Success");
+    } else {
+      responses.makeResponsesError(res, "InventoryNotFound");
+    }
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+
+//create inventory
+async function createInventory(req, res) {
+  try {
+    const iid = req.params.id;
+    const inventoryData = req.body;
+    const office = await MOffice.findOne({
+      where: { SID: inventoryData.SID },
+    });
+    if (!office) {
+      responses.makeResponsesError(res, "OfficeNotFound");
+    }
+    const medicine = await MMedicine.findOne({
+      where: { MID: inventoryData.MID },
+    });
+    if (!medicine) {
+      responses.makeResponsesError(res, "MedicineNotFound");
+    }
+
+    if (inventoryData.quantity < 0) {
+      responses.makeResponsesError(res, "InventoryNVal");
+    }
+
+    await MInventory.create({
+      SID: office.SID,
+      MID: medicine.MID,
+      quantity: inventoryData.quantity,
+      createdAt: inventoryData.createdAt,
+    });
+    responses.makeResponsesOk(res, "InventoryCreated");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+// async function createInventory(req, res) {
+//   try {
+//     const inventoryData = req.body;
+//     const office = await MOffice.findOne({
+//       where: { SID: inventoryData.SID },
+//     });
+//     if (office == null) responses.makeResponsesError(res, "AJA");
+//     const medicine = await MMedicine.findOne({
+//       where: { MID: inventoryData.MID },
+//     });
+//     if (medicine == null) responses.makeResponsesError(res, "AJA");
+
+//     await MInventory.create({
+//       SID: inventoryData.SID,
+//       MID: inventoryData.MID,
+//       quantity: inventoryData.quantity,
+//       createtAt: laboratoryData.createdAt,
+//     });
+//     responses.makeResponsesOk(res, "Success");
+//   } catch (e) {
+//     responses.makeResponsesException(res, e);
+//   }
+// }
+
+async function getInventoryByFilter(req, res) {
+  try {
+    //const inventories = await sequilize.query(`SELECT * FROM public."Inventories" as I inner join public."Offices" as O on I."SID" = O."SID"`)
+    const pag = req.query.pag;
+    const size = req.query.size;
+    const inventories = await db.sequelize.query(`
+      SELECT i."IID", o."code", o."name", m."code", 
+      l."name", m."name", m."presentation", i."quantity"
+      FROM public."Inventories" as i
+      inner join public."Offices" as o on i."SID" = o."SID"
+      inner join public."Medicines" as m on i."MID" = m."MID"
+      inner join public."Laboratories" as l on m."LID" = l."LID"
+      limit ${size}
+      offset ${pag}
+    `);
+
+    responses.makeResponsesOkData(res, inventories, "Success");
+    //responses.makeResponsesOk(res, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+async function getInventoryByMedicineID(req, res) {
+  try {
+    //Aqui va un get suma / sum de suma
+    responses.makeResponsesOkData(res, inventories, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+async function getInventoryList(req, res) {
+  try {
+    const pag = req.body.pag;
+    const size = req.body.size;
+    const offset = pag * size;
+    const ocode = req.body.oc;
+    const mcode = req.body.mc;
+    const inventories = await db.sequelize.query(
+      `
+        SELECT i."IID", o."code" as "ocode", o."name" as "oname", m."code" as "mcode", 
+        l."name" as "lname", m."name" as "mname", m."presentation", i."quantity"
+        FROM public."Inventories" as i
+        INNER JOIN public."Offices" as o on i."SID" = o."SID"
+        INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+        INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+        WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+        ORDER BY i."IID" ASC
+        limit ${size}
+        offset ${offset}
+      `,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+
+    responses.makeResponsesOkData(res, inventories, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+//get pages
+async function getPageCount(req, res) {
+  try {
+    const ocode = req.body.oc;
+    const mcode = req.body.mc;
+    const totalRecords = await db.sequelize.query(
+      `
+  SELECT COUNT(i."IID")
+  FROM public."Inventories" as i
+  INNER JOIN public."Offices" as o on i."SID" = o."SID"
+  INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+  INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+  WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+`,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    responses.makeResponsesOkData(res, totalRecords, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+//update inventory
+async function updateInventory(req, res) {
+  try {
+    const inventoryData = req.body;
+    const iid = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: {
+        [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
+        quantity: { [Op.gte]: 0 },
+      },
+    });
+    if (inventoryData.quantity < 0 || inventoryData.SID < 0 || inventoryData.MID < 0 ) {
+      responses.makeResponsesError(res, "InventoryNVal");
+    } else {
+      if (inventory != null) {
+        await MInventory.update(
+          {
+            SID: inventoryData.SID,
+            MID: inventoryData.MID,
+            createdAt: inventoryData.createdAt,
+            quantity: inventoryData.quantity,
+          },
+          {
+            where: { IID: iid },
+          }
+        );
+        responses.makeResponsesOk(res, "InventoryUpdated");
+      } else {
+        responses.makeResponsesError(res, "InventoryNotFound");
       }
+    }
+  } catch (e) {
+    responses.makeResponsesException(res, e);
   }
-
-  async function getInventoryByMedicineID (req, res) {
-    try {
-    responses.makeResponseOkData(res, inventories, "Success")
-    } catch (e) {
-    responses.makeResponsesException(res, e)
-    }
-}
-  
-async function updateInventory (req, res) {
-    try {
-    responses.makeResponseOk(res, "Success")
-    } catch (e) {
-    responses.makeResponsesException(res, e)
-    }
 }
 
-async function createInventory (req, res) {
-    try {
-    responses.makeResponseOk(res, "Success")
-    } catch (e) {
-    responses.makeResponsesException(res, e)
+// logical Delete
+async function logicDeletInv(req, res) {
+  try {
+    const iid = req.params.id;
+    let inventoryData = req.body;
+    const inventory = await MInventory.findOne({
+      where: {
+        [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
+        quantity: { [Op.gte]: 0 },
+      },
+    });
+    if (inventory != null) {
+      await MInventory.update(
+        {
+          SID: inventoryData.SID,
+          MID: inventoryData.MID,
+          createdAt: inventoryData.createdAt,
+          quantity: -1,
+        },
+        {
+          where: { IID: iid },
+        }
+      );
+      responses.makeResponsesOk(res, "InventoryDeleted");
+    } else {
+      responses.makeResponsesError(res, "InventoryNotFound");
     }
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+//physical delete Inventory
+async function deleteInventory(req, res) {
+  try {
+    const iid = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: { IID: iid, quantity: { [Op.gte]: 0 } },
+    });
+    if (inventory != null) {
+      await MInventory.destroy({
+        where: {
+          [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
+          quantity: { [Op.gte]: 0 },
+        },
+      });
+      responses.makeResponsesOk(res, "InventoryDeleted");
+    } else {
+      responses.makeResponsesError(res, "InventoryNotFound");
+    }
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
 }
 
 module.exports = {
-    getAllInventories,
-    getInventoryByOfficeID,
-    getInventoryByMedicineID,
-    updateInventory,
-    createInventory
-}
+  createInventory,
+  getAllInventories,
+  getInventoryByFilter,
+  getInventoryList,
+  getPageCount,
+  getInventoryByID,
+  updateInventory,
+  deleteInventory,
+  logicDeletInv,
+};

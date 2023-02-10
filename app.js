@@ -34,11 +34,12 @@ catch(e)
   console.log(e)
 }
 
+
 app.use(authRoutes)
 
 
 app.get('/', (req, res) => {
-    res.send('Venezuela no se ha arreglado!')
+    res.send('El siguiente proyecto esta conectado a Mitra App v1.0.')
 })
 
 app.listen(port, () => {
