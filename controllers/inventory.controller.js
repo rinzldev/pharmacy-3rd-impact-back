@@ -3,7 +3,6 @@ const db = require("../db/db");
 const MInventory = db.invetories;
 const MMedicine = db.medicines;
 const MOffice = db.offices;
-const MLaboratory = db.laboratory;
 const responses = require("../middlewares/responses");
 const { Op } = require("sequelize");
 
@@ -11,8 +10,10 @@ const { Op } = require("sequelize");
 async function getAllInventories(req, res) {
   try {
     const inventories = await MInventory.findAll({
-      order: [["MID", "asc"]],
+      where: { quantity: { [Op.gte]: 0 } },
+      order: [["IID", "asc"]],
     });
+
     responses.makeResponsesOkData(res, inventories, "Success");
   } catch (e) {
     responses.makeResponsesException(res, e);
@@ -24,7 +25,7 @@ async function getInventoryByID(req, res) {
   try {
     const iid = req.params.id;
     const inventory = await MInventory.findOne({
-      where: { IID: iid },
+      where: { IID: iid, quantity: { [Op.gte]: 0 } },
     });
     if (inventory != null) {
       responses.makeResponsesOkData(res, inventory, "Success");
@@ -36,29 +37,64 @@ async function getInventoryByID(req, res) {
   }
 }
 
+
+//create inventory
 async function createInventory(req, res) {
   try {
+    const iid = req.params.id;
     const inventoryData = req.body;
     const office = await MOffice.findOne({
       where: { SID: inventoryData.SID },
     });
-    if (office == null) responses.makeResponsesError(res, "AJA");
+    if (!office) {
+      responses.makeResponsesError(res, "OfficeNotFound");
+    }
     const medicine = await MMedicine.findOne({
       where: { MID: inventoryData.MID },
     });
-    if (medicine == null) responses.makeResponsesError(res, "AJA");
+    if (!medicine) {
+      responses.makeResponsesError(res, "MedicineNotFound");
+    }
+
+    if (inventoryData.quantity < 0) {
+      responses.makeResponsesError(res, "InventoryNVal");
+    }
 
     await MInventory.create({
-      SID: inventoryData.SID,
-      MID: inventoryData.MID,
+      SID: office.SID,
+      MID: medicine.MID,
       quantity: inventoryData.quantity,
-      createtAt: laboratoryData.createdAt,
+      createdAt: inventoryData.createdAt,
     });
-    responses.makeResponsesOk(res, "Success");
+    responses.makeResponsesOk(res, "InventoryCreated");
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
 }
+
+// async function createInventory(req, res) {
+//   try {
+//     const inventoryData = req.body;
+//     const office = await MOffice.findOne({
+//       where: { SID: inventoryData.SID },
+//     });
+//     if (office == null) responses.makeResponsesError(res, "AJA");
+//     const medicine = await MMedicine.findOne({
+//       where: { MID: inventoryData.MID },
+//     });
+//     if (medicine == null) responses.makeResponsesError(res, "AJA");
+
+//     await MInventory.create({
+//       SID: inventoryData.SID,
+//       MID: inventoryData.MID,
+//       quantity: inventoryData.quantity,
+//       createtAt: laboratoryData.createdAt,
+//     });
+//     responses.makeResponsesOk(res, "Success");
+//   } catch (e) {
+//     responses.makeResponsesException(res, e);
+//   }
+// }
 
 async function getInventoryByFilter(req, res) {
   try {
@@ -82,18 +118,6 @@ async function getInventoryByFilter(req, res) {
     responses.makeResponsesException(res, e);
   }
 }
-
-// async function getAllInventories(req, res) {
-//   try {
-//     const inventories = await db.sequelize.query(`
-//     SELECT *
-// 	    FROM public."Inventories"
-//   `)
-//     responses.makeResponsesOkData(res, inventories, "Success");
-//   } catch (e) {
-//     responses.makeResponsesException(res, e);
-//   }
-// }
 
 async function getInventoryByMedicineID(req, res) {
   try {
@@ -155,22 +179,37 @@ async function getPageCount(req, res) {
   }
 }
 
-
+//update inventory
 async function updateInventory(req, res) {
   try {
     const inventoryData = req.body;
-
-    const current = inventoryData.currentValue;
-    current = current - inventoryData.quantity;
-    await MInventory.create({
-      SID: inventoryData.SID,
-      MID: inventoryData.MID,
-      quantity: current,
-      createtAt: Date.now(),
+    const iid = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: {
+        [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
+        quantity: { [Op.gte]: 0 },
+      },
     });
-
-    // validacion de cantidad
-    responses.makeResponsesOk(res, "Success");
+    if (inventoryData.quantity < 0 || inventoryData.SID < 0 || inventoryData.MID < 0 ) {
+      responses.makeResponsesError(res, "InventoryNVal");
+    } else {
+      if (inventory != null) {
+        await MInventory.update(
+          {
+            SID: inventoryData.SID,
+            MID: inventoryData.MID,
+            createdAt: inventoryData.createdAt,
+            quantity: inventoryData.quantity,
+          },
+          {
+            where: { IID: iid },
+          }
+        );
+        responses.makeResponsesOk(res, "InventoryUpdated");
+      } else {
+        responses.makeResponsesError(res, "InventoryNotFound");
+      }
+    }
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
@@ -179,24 +218,27 @@ async function updateInventory(req, res) {
 // logical Delete
 async function logicDeletInv(req, res) {
   try {
-    const inventoryData = req.body;
-    const sid = req.params.SID;
-    const mid = req.params.MID;
-    const inventory = await MInventory.findAll({
-      where: { SID: sid, MID: mid },
+    const iid = req.params.id;
+    let inventoryData = req.body;
+    const inventory = await MInventory.findOne({
+      where: {
+        [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
+        quantity: { [Op.gte]: 0 },
+      },
     });
-    if (inventory != null && inventoryData.quantity >= 0) {
+    if (inventory != null) {
       await MInventory.update(
         {
-          quantity: 0,
+          SID: inventoryData.SID,
+          MID: inventoryData.MID,
+          createdAt: inventoryData.createdAt,
+          quantity: -1,
         },
         {
-          where: { UID: id, status: true },
+          where: { IID: iid },
         }
       );
-      responses.makeResponsesOk(res, "UDeleted");
-    } else if (inventoryData.quantity < 0) {
-      responses.makeResponsesError(res, "InventoryNVal");
+      responses.makeResponsesOk(res, "InventoryDeleted");
     } else {
       responses.makeResponsesError(res, "InventoryNotFound");
     }
@@ -208,14 +250,16 @@ async function logicDeletInv(req, res) {
 //physical delete Inventory
 async function deleteInventory(req, res) {
   try {
-    const sid = req.params.SID;
-    const mid = req.params.MID;
-    const inventory = await MInventory.findAll({
-      where: { SID: sid, MID: mid },
+    const iid = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: { IID: iid, quantity: { [Op.gte]: 0 } },
     });
     if (inventory != null) {
       await MInventory.destroy({
-        where: { SID: sid, MID: mid },
+        where: {
+          [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
+          quantity: { [Op.gte]: 0 },
+        },
       });
       responses.makeResponsesOk(res, "InventoryDeleted");
     } else {
