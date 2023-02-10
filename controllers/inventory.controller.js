@@ -41,34 +41,18 @@ async function getInventoryByID(req, res) {
 //create inventory
 async function createInventory(req, res) {
   try {
-    const iid = req.params.id;
     const inventoryData = req.body;
-    const office = await MOffice.findOne({
-      where: { SID: inventoryData.SID },
-    });
-    if (!office) {
-      responses.makeResponsesError(res, "OfficeNotFound");
-    }
-    const medicine = await MMedicine.findOne({
-      where: { MID: inventoryData.MID },
-    });
-    if (!medicine) {
-      responses.makeResponsesError(res, "MedicineNotFound");
-    }
-
-    if (inventoryData.quantity < 0) {
-      responses.makeResponsesError(res, "InventoryNVal");
-    }
-
-    await MInventory.create({
-      SID: office.SID,
-      MID: medicine.MID,
-      quantity: inventoryData.quantity,
-      createdAt: inventoryData.createdAt,
-    });
-    responses.makeResponsesOk(res, "InventoryCreated");
+    
+      await MInventory.create({
+        SID: office.SID,
+        MID: medicine.MID,
+        quantity: inventoryData.quantity,
+        createdAt: inventoryData.createdAt,
+      });
+      return responses.makeResponsesOk(res, "InventoryCreated");
+    
   } catch (e) {
-    responses.makeResponsesException(res, e);
+    return responses.makeResponsesException(res, e);
   }
 }
 

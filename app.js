@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: false }))
 try
 {
   db.sequelize.sync()
-  //db.sequelize.sync({ force: true })
+  //db.sequelize.sync({force: true })
 }
 catch(e)
 {
