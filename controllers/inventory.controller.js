@@ -1,21 +1,21 @@
-"use strict"
-const db = require("../db/db")
-const MInventory = db.invetories
-const MMedicine = db.medicines
-const MOffice = db.offices
-const MLaboratory = db.laboratory
-const responses = require("../middlewares/responses")
-const { Op } = require("sequelize")
+"use strict";
+const db = require("../db/db");
+const MInventory = db.invetories;
+const MMedicine = db.medicines;
+const MOffice = db.offices;
+const MLaboratory = db.laboratory;
+const responses = require("../middlewares/responses");
+const { Op } = require("sequelize");
 
 //get all inventories
-async function getAllInventories (req, res) {
+async function getAllInventories(req, res) {
   try {
-      const inventories = await MInventory.findAll({
-          order: [['MID', 'asc']]
-      })
-    responses.makeResponsesOkData(res, inventories, "Success")
+    const inventories = await MInventory.findAll({
+      order: [["MID", "asc"]],
+    });
+    responses.makeResponsesOkData(res, inventories, "Success");
   } catch (e) {
-    responses.makeResponsesException(res, e)
+    responses.makeResponsesException(res, e);
   }
 }
 
@@ -26,12 +26,11 @@ async function getInventoryByID(req, res) {
     const inventory = await MInventory.findOne({
       where: { IID: iid },
     });
-    if (inventory != null){
+    if (inventory != null) {
       responses.makeResponsesOkData(res, inventory, "Success");
-    }
-    else{
+    } else {
       responses.makeResponsesError(res, "InventoryNotFound");
-    } 
+    }
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
@@ -64,8 +63,8 @@ async function createInventory(req, res) {
 async function getInventoryByFilter(req, res) {
   try {
     //const inventories = await sequilize.query(`SELECT * FROM public."Inventories" as I inner join public."Offices" as O on I."SID" = O."SID"`)
-    const pag = req.query.pag
-    const size = req.query.size
+    const pag = req.query.pag;
+    const size = req.query.size;
     const inventories = await db.sequelize.query(`
       SELECT i."IID", o."code", o."name", m."code", 
       l."name", m."name", m."presentation", i."quantity"
@@ -75,7 +74,7 @@ async function getInventoryByFilter(req, res) {
       inner join public."Laboratories" as l on m."LID" = l."LID"
       limit ${size}
       offset ${pag}
-    `)
+    `);
 
     responses.makeResponsesOkData(res, inventories, "Success");
     //responses.makeResponsesOk(res, "Success");
@@ -83,7 +82,6 @@ async function getInventoryByFilter(req, res) {
     responses.makeResponsesException(res, e);
   }
 }
-
 
 // async function getAllInventories(req, res) {
 //   try {
@@ -97,7 +95,6 @@ async function getInventoryByFilter(req, res) {
 //   }
 // }
 
-
 async function getInventoryByMedicineID(req, res) {
   try {
     //Aqui va un get suma / sum de suma
@@ -106,6 +103,58 @@ async function getInventoryByMedicineID(req, res) {
     responses.makeResponsesException(res, e);
   }
 }
+
+async function getInventoryList(req, res) {
+  try {
+    const pag = req.body.pag;
+    const size = req.body.size;
+    const offset = pag * size;
+    const ocode = req.body.oc;
+    const mcode = req.body.mc;
+    const inventories = await db.sequelize.query(
+      `
+  SELECT i."IID", o."code" as "ocode", o."name" as "oname", m."code" as "mcode", 
+  l."name" as "lname", m."name" as "mname", m."presentation", i."quantity"
+  FROM public."Inventories" as i
+  INNER JOIN public."Offices" as o on i."SID" = o."SID"
+  INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+  INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+  WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+  ORDER BY i."IID" ASC
+  limit ${size}
+  offset ${offset}
+`,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+
+    responses.makeResponsesOkData(res, inventories, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+//get pages
+async function getPageCount(req, res) {
+  try {
+    const ocode = req.body.oc;
+    const mcode = req.body.mc;
+    const totalRecords = await db.sequelize.query(
+      `
+  SELECT COUNT(i."IID")
+  FROM public."Inventories" as i
+  INNER JOIN public."Offices" as o on i."SID" = o."SID"
+  INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+  INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+  WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+`,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    responses.makeResponsesOkData(res, totalRecords, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
 
 async function updateInventory(req, res) {
   try {
@@ -177,13 +226,14 @@ async function deleteInventory(req, res) {
   }
 }
 
-
 module.exports = {
   createInventory,
   getAllInventories,
   getInventoryByFilter,
+  getInventoryList,
+  getPageCount,
   getInventoryByID,
-  updateInventory,  
+  updateInventory,
   deleteInventory,
-  logicDeletInv,  
+  logicDeletInv,
 };
