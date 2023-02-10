@@ -190,9 +190,20 @@ async function updateInventory(req, res) {
         quantity: { [Op.gte]: 0 },
       },
     });
+    const office = await MOffice.findOne({
+      where: { SID: inventoryData.SID },
+    });
+    const medicine = await MMedicine.findOne({
+      where: { MID: inventoryData.MID },
+    });
     if (inventoryData.quantity < 0 || inventoryData.SID < 0 || inventoryData.MID < 0 ) {
       responses.makeResponsesError(res, "InventoryNVal");
-    } else {
+    } else if (!office) {
+      responses.makeResponsesError(res, "OfficeNotFound");
+    } else if (!medicine){
+      responses.makeResponsesError(res, "MedicineNotfound");
+    }
+     else {
       if (inventory != null) {
         await MInventory.update(
           {
@@ -215,6 +226,7 @@ async function updateInventory(req, res) {
   }
 }
 
+
 // logical Delete
 async function logicDeletInv(req, res) {
   try {
@@ -226,21 +238,35 @@ async function logicDeletInv(req, res) {
         quantity: { [Op.gte]: 0 },
       },
     });
-    if (inventory != null) {
-      await MInventory.update(
-        {
-          SID: inventoryData.SID,
-          MID: inventoryData.MID,
-          createdAt: inventoryData.createdAt,
-          quantity: -1,
-        },
-        {
-          where: { IID: iid },
-        }
-      );
-      responses.makeResponsesOk(res, "InventoryDeleted");
-    } else {
-      responses.makeResponsesError(res, "InventoryNotFound");
+    const office = await MOffice.findOne({
+      where: { SID: inventoryData.SID },
+    });
+    const medicine = await MMedicine.findOne({
+      where: { MID: inventoryData.MID },
+    });
+    if (inventoryData.quantity < 0 || inventoryData.SID < 0 || inventoryData.MID < 0 ) {
+      responses.makeResponsesError(res, "InventoryNVal");
+    } else if (!office) {
+      responses.makeResponsesError(res, "OfficeNotFound");
+    } else if (!medicine){
+      responses.makeResponsesError(res, "MedicineNotfound");
+    }else{
+      if (inventory != null) {
+        await MInventory.update(
+          {
+            SID: inventoryData.SID,
+            MID: inventoryData.MID,
+            createdAt: inventoryData.createdAt,
+            quantity: -1,
+          },
+          {
+            where: { IID: iid },
+          }
+        );
+        responses.makeResponsesOk(res, "InventoryDeleted");
+      } else {
+        responses.makeResponsesError(res, "InventoryNotFound");
+      }
     }
   } catch (e) {
     responses.makeResponsesException(res, e);
