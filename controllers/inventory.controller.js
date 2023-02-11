@@ -42,7 +42,7 @@ async function getTotalBySID(req, res) {
     const id = req.params.id;
     const result = await MInventory.sum("quantity", {
       where: {
-        [Op.or]: [{ SID: id }, { IID: id }],
+        SID: id,
         quantity: { [Op.gte]: 0 },
       },
     });
