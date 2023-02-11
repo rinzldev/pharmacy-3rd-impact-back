@@ -37,43 +37,43 @@ async function getInventoryByID(req, res) {
   }
 }
 
-async function getTotalBySID(req, res) {
+
+async function getByMID(req, res) {
   try {
-    const id = req.params.id;
-    const result = await MInventory.sum("quantity", {
+    const SID = req.params.SID;
+    const MID = req.params.MID;
+    const result = await MInventory.findOne({
       where: {
-        SID: id,
+        SID: SID,
+        MID: MID,
         quantity: { [Op.gte]: 0 },
       },
     });
     if (result != null) {
-      responses.makeResponsesOkData(res, {totalQuantity: result}, "Success");
+      responses.makeResponsesOkData(res, {quantity: result.quantity}, "Success");
     } else {
-      responses.makeResponsesError(res, "InventoryNotFound");
+      responses.makeResponsesOkData(res, {quantity: 0}, "Success");
     }
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
 }
 
-
-// async function getInventoryByMID(req, res) {
+// async function getTotalBySID(req, res) {
 //   try {
 //     const id = req.params.id;
-//     const inventory = await MInventory.findAll({
-//       where: {
-//         [Op.or]: [{ MID: id }, { IID: id }],
-//         quantity: { [Op.gte]: 0 },
-//       },
-//     });
 //     const result = await MInventory.sum("quantity", {
 //       where: {
-//         [Op.or]: [{ MID: id }, { IID: id }],
+//         SID: id ,
 //         quantity: { [Op.gte]: 0 },
 //       },
+//       include: [{
+//         model: MMedicine,
+//         attributes: ['code'],
+//       }],
 //     });
-//     if (inventory && result) {
-//       responses.makeResponsesOkData(res, {inventory,totalQuantity: result}, "Success");
+//     if (result != null) {
+//       responses.makeResponsesOkData(res, {totalQuantity: result}, "Success");
 //     } else {
 //       responses.makeResponsesError(res, "InventoryNotFound");
 //     }
@@ -81,7 +81,6 @@ async function getTotalBySID(req, res) {
 //     responses.makeResponsesException(res, e);
 //   }
 // }
-
 
 
 //create inventory
@@ -113,7 +112,7 @@ async function createInventory(req, res) {
       // Actualizar la cantidad si existe
       await MInventory.update(
         {
-          quantity: existingInventory.quantity + inventoryData.quantity,
+          quantity: inventoryData.quantity,
         },
         {
           where: { IID: existingInventory.IID },
@@ -292,14 +291,15 @@ async function updateInventory(req, res) {
 // logical Delete
 async function logicDeletInv(req, res) {
   try {
-    const iid = req.params.id;
-    let inventoryData = req.body;
-    const inventory = await MInventory.findOne({
-      where: {
-        [Op.or]: [{ IID: iid }, { MID: iid }, { SID: iid }],
-        quantity: { [Op.gte]: 0 },
-      },
-    });
+    const SID = req.params.SID;
+    const MID = req.params.MID;
+    const inventoryData = await MInventory.findOne({
+        where: {
+          SID: SID,
+          MID: MID,
+          quantity: { [Op.gte]: 0 },
+        },
+      });
     const office = await MOffice.findOne({
       where: { SID: inventoryData.SID },
     });
@@ -317,16 +317,13 @@ async function logicDeletInv(req, res) {
     } else if (!medicine) {
       responses.makeResponsesError(res, "MedicineNotfound");
     } else {
-      if (inventory != null) {
+      if (inventoryData != null) {
         await MInventory.update(
           {
-            SID: inventoryData.SID,
-            MID: inventoryData.MID,
-            createdAt: inventoryData.createdAt,
             quantity: -1,
           },
           {
-            where: { IID: iid },
+            where: { IID: inventoryData.IID },
           }
         );
         responses.makeResponsesOk(res, "InventoryDeleted");
@@ -369,7 +366,7 @@ module.exports = {
   getInventoryList,
   getPageCount,
   getInventoryByID,
-  getTotalBySID,
+  getByMID,
   updateInventory,
   deleteInventory,
   logicDeletInv,
