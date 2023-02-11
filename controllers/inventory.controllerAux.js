@@ -88,6 +88,25 @@ async function getPageCount(req, res) {
 }
 
 
+async function getInventoryByID(req, res) {
+  try {
+    const id = req.params.id;
+    const inventory = await MInventory.findOne({
+      where: {
+        [Op.or]: [{ SID: id }, { MID: id }],
+        quantity: { [Op.gte]: 0 },
+      },
+    });
+    if (inventory != null) {
+      responses.makeResponsesOkData(res, inventory, "Success");
+    } else {
+      responses.makeResponsesError(res, "InventoryNotFound");
+    }
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
 
 
 

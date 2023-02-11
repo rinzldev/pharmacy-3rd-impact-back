@@ -37,6 +37,53 @@ async function getInventoryByID(req, res) {
   }
 }
 
+async function getTotalBySID(req, res) {
+  try {
+    const id = req.params.id;
+    const result = await MInventory.sum("quantity", {
+      where: {
+        [Op.or]: [{ SID: id }, { IID: id }],
+        quantity: { [Op.gte]: 0 },
+      },
+    });
+    if (result != null) {
+      responses.makeResponsesOkData(res, {totalQuantity: result}, "Success");
+    } else {
+      responses.makeResponsesError(res, "InventoryNotFound");
+    }
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+
+// async function getInventoryByMID(req, res) {
+//   try {
+//     const id = req.params.id;
+//     const inventory = await MInventory.findAll({
+//       where: {
+//         [Op.or]: [{ MID: id }, { IID: id }],
+//         quantity: { [Op.gte]: 0 },
+//       },
+//     });
+//     const result = await MInventory.sum("quantity", {
+//       where: {
+//         [Op.or]: [{ MID: id }, { IID: id }],
+//         quantity: { [Op.gte]: 0 },
+//       },
+//     });
+//     if (inventory && result) {
+//       responses.makeResponsesOkData(res, {inventory,totalQuantity: result}, "Success");
+//     } else {
+//       responses.makeResponsesError(res, "InventoryNotFound");
+//     }
+//   } catch (e) {
+//     responses.makeResponsesException(res, e);
+//   }
+// }
+
+
+
 //create inventory
 async function createInventory(req, res) {
   try {
@@ -151,7 +198,6 @@ async function getInventoryList(req, res) {
   }
 }
 
-
 //get pages
 // async function getPageCount(req, res) {
 //   try {
@@ -170,7 +216,6 @@ async function getInventoryList(req, res) {
 //     responses.makeResponsesException(res, e);
 //   }
 // }
-
 
 async function getPageCount(req, res) {
   try {
@@ -324,6 +369,7 @@ module.exports = {
   getInventoryList,
   getPageCount,
   getInventoryByID,
+  getTotalBySID,
   updateInventory,
   deleteInventory,
   logicDeletInv,
