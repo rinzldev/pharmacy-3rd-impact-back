@@ -179,7 +179,7 @@ async function getPageCount(req, res) {
     const size = req.body.size;
     let totalRecords = await db.sequelize.query(
       `
-        SELECT COUNT(i."IID")
+        SELECT COUNT(i."IID") as count
         FROM public."Inventories" as i
         INNER JOIN public."Offices" as o on i."SID" = o."SID"
         INNER JOIN public."Medicines" as m on i."MID" = m."MID"
@@ -188,8 +188,7 @@ async function getPageCount(req, res) {
       `,
       { type: db.sequelize.QueryTypes.SELECT }
     );
-    
-    responses.makeResponsesOkData(res, totalRecords, "Success");
+    responses.makeResponsesOkData(res, totalRecords[0].count, "Success");
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
