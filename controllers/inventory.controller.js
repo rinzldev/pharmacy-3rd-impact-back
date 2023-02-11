@@ -183,7 +183,7 @@ async function getInventoryList(req, res) {
         INNER JOIN public."Offices" as o on i."SID" = o."SID"
         INNER JOIN public."Medicines" as m on i."MID" = m."MID"
         INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
-        WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+        WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%' AND i."quantity">0)
         ORDER BY i."IID" ASC
         limit ${size}
         offset ${offset}
@@ -323,7 +323,7 @@ async function logicDeletInv(req, res) {
             quantity: -1,
           },
           {
-            where: { IID: inventoryData.IID },
+            where: { SID: inventoryData.SID, MID: inventoryData.MID },
           }
         );
         responses.makeResponsesOk(res, "InventoryDeleted");
