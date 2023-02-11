@@ -165,8 +165,8 @@ async function getPageCount(req, res) {
         { model: MMedicine, include: [{ model: Laboratory }], where: { code: { [Op.like]: `%${mcode}%` } } }
       ],
     });
-
-    responses.makeResponsesOkData(res, totalRecords, "Success");
+    const Pages = totalRecords.count;
+    responses.makeResponsesOkData(res, Pages, "Success");
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
