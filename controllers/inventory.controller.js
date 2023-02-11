@@ -59,28 +59,6 @@ async function getByMID(req, res) {
   }
 }
 
-// async function getTotalBySID(req, res) {
-//   try {
-//     const id = req.params.id;
-//     const result = await MInventory.sum("quantity", {
-//       where: {
-//         SID: id ,
-//         quantity: { [Op.gte]: 0 },
-//       },
-//       include: [{
-//         model: MMedicine,
-//         attributes: ['code'],
-//       }],
-//     });
-//     if (result != null) {
-//       responses.makeResponsesOkData(res, {totalQuantity: result}, "Success");
-//     } else {
-//       responses.makeResponsesError(res, "InventoryNotFound");
-//     }
-//   } catch (e) {
-//     responses.makeResponsesException(res, e);
-//   }
-// }
 
 
 //create inventory
