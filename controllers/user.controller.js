@@ -161,6 +161,7 @@ async function login(req, res) {
       id: userval.UID,
       name: userval.name,
       type: userval.type,
+      SID: userval.SID,
       token: token,
     };
     responses.makeResponsesOkData(res, user, "ULogin");
