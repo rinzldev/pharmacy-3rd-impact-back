@@ -12,6 +12,12 @@ module.exports = (sequelize, Sequelize) => {
 			allowNull: false,
 			require: true
 		},
+		IID:{
+			type: Sequelize.INTEGER,
+			autoIncrement: true,
+			primaryKey: true
+			},
+
 		quantity:{
 			type: Sequelize.INTEGER,
 			allowNull: false,
