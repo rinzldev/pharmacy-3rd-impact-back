@@ -236,7 +236,7 @@ async function getInventoryList(req, res) {
         INNER JOIN public."Medicines" as m on i."MID" = m."MID"
         INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
         WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%' AND i."quantity">0)
-        ORDER BY o."code" AS, m."code"
+        ORDER BY o."code" ASC, m."code" ASC
         limit ${size}
         offset ${offset}
       `,
