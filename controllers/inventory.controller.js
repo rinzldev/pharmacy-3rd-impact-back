@@ -42,43 +42,53 @@ async function getInventoryByID(req, res) {
 async function createInventory(req, res) {
   try {
     const inventoryData = req.body;
-    
-      await MInventory.create({
-        SID: office.SID,
-        MID: medicine.MID,
-        quantity: inventoryData.quantity,
-        createdAt: inventoryData.createdAt,
+
+    // Verificar si la oficina existe
+    const office = await MOffice.findOne({
+      where: { SID: inventoryData.SID },
+    });
+    if (!office) {
+      return responses.makeResponsesError(res, 'OfficeNotFound');
+    }
+
+    // Verificar si el medicamento existe
+    const medicine = await MMedicine.findOne({
+      where: { MID: inventoryData.MID },
+    });
+    if (!medicine) {
+      return responses.makeResponsesError(res, 'MedicineNotfound');
+    }
+
+    // Verificar si el inventario existe
+    const existingInventory = await MInventory.findOne({
+      where: { SID: inventoryData.SID, MID: inventoryData.MID },
+    });
+    if (existingInventory) {
+      // Actualizar la cantidad si existe
+      await MInventory.update({
+        quantity: existingInventory.quantity + inventoryData.quantity,
+      }, {
+        where: { IID: existingInventory.IID },
       });
-      return responses.makeResponsesOk(res, "InventoryCreated");
-    
+    } else {
+      // Crear un nuevo registro si no existe
+      await MInventory.create({
+        SID: inventoryData.SID,
+        MID: inventoryData.MID,
+        quantity: inventoryData.quantity,
+        createdAt: new Date(),
+      });
+    }
+
+    // Enviar una respuesta satisfactoria
+    responses.makeResponsesOk(res, 'InventoryCreated');
   } catch (e) {
-    return responses.makeResponsesException(res, e);
+    // Enviar una respuesta de error
+    responses.makeResponsesException(res, e);
   }
 }
 
-// async function createInventory(req, res) {
-//   try {
-//     const inventoryData = req.body;
-//     const office = await MOffice.findOne({
-//       where: { SID: inventoryData.SID },
-//     });
-//     if (office == null) responses.makeResponsesError(res, "AJA");
-//     const medicine = await MMedicine.findOne({
-//       where: { MID: inventoryData.MID },
-//     });
-//     if (medicine == null) responses.makeResponsesError(res, "AJA");
 
-//     await MInventory.create({
-//       SID: inventoryData.SID,
-//       MID: inventoryData.MID,
-//       quantity: inventoryData.quantity,
-//       createtAt: laboratoryData.createdAt,
-//     });
-//     responses.makeResponsesOk(res, "Success");
-//   } catch (e) {
-//     responses.makeResponsesException(res, e);
-//   }
-// }
 
 async function getInventoryByFilter(req, res) {
   try {
