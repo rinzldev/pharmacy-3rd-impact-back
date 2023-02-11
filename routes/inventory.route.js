@@ -4,7 +4,8 @@ const cInventory = require('../controllers/inventory.controller')
 //gets
 router.get('/', cInventory.getAllInventories)
 router.get('/filter', cInventory.getInventoryByFilter)
-router.get('/:id', cInventory.getInventoryByID)
+router.get('/count/:id', cInventory.getCountMedicine)
+router.get('/sum/:id', cInventory.getSumMedicine)
 router.get('/:SID/:MID', cInventory.getByMID)
 //post
 router.post('/inventoryList', cInventory.getInventoryList)

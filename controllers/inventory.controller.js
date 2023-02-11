@@ -59,7 +59,81 @@ async function getByMID(req, res) {
   }
 }
 
+async function getCountMedicine(req , res){
+  try {
+    let ocode = req.params.id;
+    if (ocode==='*'){ ocode = '' }
+    let totalRecords = await db.sequelize.query(
+      `
+        SELECT COUNT(DISTINCT i."MID") as count
+        FROM public."Inventories" as i
+        INNER JOIN public."Offices" as o on i."SID" = o."SID"
+        INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+        WHERE (o."code" LIKE '%${ocode}%' AND i."quantity" >= 0)
+      `,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    responses.makeResponsesOkData(res, totalRecords[0].count, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
 
+async function getSumMedicine(req , res){
+  try {
+    let ocode = req.params.id;
+    if (ocode==='*'){ ocode = '' }
+    let totalRecords = await db.sequelize.query(
+      `
+        SELECT SUM(i."quantity") as count
+        FROM public."Inventories" as i
+        INNER JOIN public."Offices" as o on i."SID" = o."SID"
+        INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+        WHERE (o."code" LIKE '%${ocode}%' AND i."quantity" >= 0)
+      `,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    responses.makeResponsesOkData(res, totalRecords[0].count, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
+
+
+
+
+
+// async function getCountMedicine(req , res){
+//   try {
+//     const SID = req.params.id || 0;
+//     if (SID===0){
+//     const result = await MInventory.count({
+//       distinct: true,
+//       col: 'MID',
+//       where: {
+//         quantity: { [Op.gte]: 0 },
+//       },
+//       limit:1
+//     });} else {
+//       const result = await MInventory.count({
+//         distinct: true,
+//         col: 'MID',
+//         // where: {
+//         //   SID: SID,
+//         //   quantity: { [Op.gte]: 0 },
+//         // },
+//         limit:1
+//       });
+//     }
+//     if (result != null) {
+//       responses.makeResponsesOkData(res, {quantity: result || 0}, "Success");
+//     } else {
+//       responses.makeResponsesOkData(res, {quantity: 0}, "Success");
+//     }
+//   } catch (e) {
+//     responses.makeResponsesException(res, e);
+//   }
+// }
 
 //create inventory
 async function createInventory(req, res) {
@@ -345,6 +419,8 @@ module.exports = {
   getPageCount,
   getInventoryByID,
   getByMID,
+  getCountMedicine,
+  getSumMedicine,
   updateInventory,
   deleteInventory,
   logicDeletInv,
