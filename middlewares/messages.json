@@ -5,8 +5,7 @@
     "LaboratoryDeleted": "the laboratory has been successfully deleted",
     "ExistLaboratory": "Error, laboratory rif already exists",
     "LaboratoryNotfound": "Error, laboratory not found",
-    
-    
+    "InsufficientInventory": "test error",
     
     "OfficeCreated": "the office has been successfully created.",
     "OfficeUpdated": "the office has been successfully updated",
@@ -20,11 +19,12 @@
     "ExistMedicine": "Error, medicine code already exists",
     "MedicineNotfound": "Error, medicine not found",
     
-    "InventoryCreated": "the medicine has been successfully created.",
-    "InventoryUpdated": "the medicine has been successfully updated",
-    "InventoryDeleted": "the medicine has been successfully deleted",
+    "InventoryCreated": "the inventory has been successfully created.",
+    "InventoryUpdated": "the inventory has been successfully updated",
+    "InventoryDeleted": "the inventory has been successfully deleted",
     "InventoryNotFound": "Error, inventory not found",
     "InventoryNVal": "Error, invalid value",
+    "ExistInventory": "Error, inventory already exists",
 
     "UCreated": "User has been successfully created",
     "UUpdated": "User has been successfully updated",
