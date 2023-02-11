@@ -68,6 +68,24 @@ async function getInventoryList(req, res) {
 // }
 // }
 
+async function getPageCount(req, res) {
+  try {
+    const ocode = req.body.oc;
+    const mcode = req.body.mc;
+    const size = req.body.size;
+
+    const totalRecords = await Inventory.findAndCountAll({
+      include: [
+        { model: MOffice, where: { code: { [Op.like]: `%${ocode}%` } } },
+        { model: MMedicine, include: [{ model: Laboratory }], where: { code: { [Op.like]: `%${mcode}%` } } }
+      ],
+    });
+
+    responses.makeResponsesOkData(res, totalRecords, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
 
 
 

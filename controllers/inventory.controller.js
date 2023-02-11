@@ -37,7 +37,6 @@ async function getInventoryByID(req, res) {
   }
 }
 
-
 //create inventory
 async function createInventory(req, res) {
   try {
@@ -48,7 +47,7 @@ async function createInventory(req, res) {
       where: { SID: inventoryData.SID },
     });
     if (!office) {
-      return responses.makeResponsesError(res, 'OfficeNotFound');
+      return responses.makeResponsesError(res, "OfficeNotFound");
     }
 
     // Verificar si el medicamento existe
@@ -56,7 +55,7 @@ async function createInventory(req, res) {
       where: { MID: inventoryData.MID },
     });
     if (!medicine) {
-      return responses.makeResponsesError(res, 'MedicineNotfound');
+      return responses.makeResponsesError(res, "MedicineNotfound");
     }
 
     // Verificar si el inventario existe
@@ -65,11 +64,14 @@ async function createInventory(req, res) {
     });
     if (existingInventory) {
       // Actualizar la cantidad si existe
-      await MInventory.update({
-        quantity: existingInventory.quantity + inventoryData.quantity,
-      }, {
-        where: { IID: existingInventory.IID },
-      });
+      await MInventory.update(
+        {
+          quantity: existingInventory.quantity + inventoryData.quantity,
+        },
+        {
+          where: { IID: existingInventory.IID },
+        }
+      );
     } else {
       // Crear un nuevo registro si no existe
       await MInventory.create({
@@ -81,14 +83,12 @@ async function createInventory(req, res) {
     }
 
     // Enviar una respuesta satisfactoria
-    responses.makeResponsesOk(res, 'InventoryCreated');
+    responses.makeResponsesOk(res, "InventoryCreated");
   } catch (e) {
     // Enviar una respuesta de error
     responses.makeResponsesException(res, e);
   }
 }
-
-
 
 async function getInventoryByFilter(req, res) {
   try {
@@ -126,7 +126,7 @@ async function getInventoryList(req, res) {
   try {
     const pag = req.body.pag;
     const size = req.body.size;
-    const offset = pag * size;
+    const offset = pag * size; //estano
     const ocode = req.body.oc;
     const mcode = req.body.mc;
     const inventories = await db.sequelize.query(
@@ -151,27 +151,50 @@ async function getInventoryList(req, res) {
   }
 }
 
+
 //get pages
 async function getPageCount(req, res) {
   try {
     const ocode = req.body.oc;
     const mcode = req.body.mc;
-    const totalRecords = await db.sequelize.query(
-      `
-  SELECT COUNT(i."IID")
-  FROM public."Inventories" as i
-  INNER JOIN public."Offices" as o on i."SID" = o."SID"
-  INNER JOIN public."Medicines" as m on i."MID" = m."MID"
-  INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
-  WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
-`,
-      { type: db.sequelize.QueryTypes.SELECT }
-    );
+    const size = req.body.size;
+
+    const totalRecords = await MInventory.findAndCountAll({
+      include: [
+        { model: MOffice, where: { code: { [Op.like]: `%${ocode}%` } } },
+        { model: MMedicine, include: [{ model: Laboratory }], where: { code: { [Op.like]: `%${mcode}%` } } }
+      ],
+    });
+
     responses.makeResponsesOkData(res, totalRecords, "Success");
   } catch (e) {
     responses.makeResponsesException(res, e);
   }
 }
+
+
+// async function getPageCount(req, res) {
+//   try {
+//     const ocode = req.body.oc;
+//     const mcode = req.body.mc;
+//     const size = req.body.size;
+//     let totalRecords = await db.sequelize.query(
+//       `
+//         SELECT COUNT(i."IID")
+//         FROM public."Inventories" as i
+//         INNER JOIN public."Offices" as o on i."SID" = o."SID"
+//         INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+//         INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+//         WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+//       `,
+//       { type: db.sequelize.QueryTypes.SELECT }
+//     );
+    
+//     responses.makeResponsesOkData(res, totalRecords, "Success");
+//   } catch (e) {
+//     responses.makeResponsesException(res, e);
+//   }
+// }
 
 //update inventory
 async function updateInventory(req, res) {
@@ -190,14 +213,17 @@ async function updateInventory(req, res) {
     const medicine = await MMedicine.findOne({
       where: { MID: inventoryData.MID },
     });
-    if (inventoryData.quantity < 0 || inventoryData.SID < 0 || inventoryData.MID < 0 ) {
+    if (
+      inventoryData.quantity < 0 ||
+      inventoryData.SID < 0 ||
+      inventoryData.MID < 0
+    ) {
       responses.makeResponsesError(res, "InventoryNVal");
     } else if (!office) {
       responses.makeResponsesError(res, "OfficeNotFound");
-    } else if (!medicine){
+    } else if (!medicine) {
       responses.makeResponsesError(res, "MedicineNotfound");
-    }
-     else {
+    } else {
       if (inventory != null) {
         await MInventory.update(
           {
@@ -220,7 +246,6 @@ async function updateInventory(req, res) {
   }
 }
 
-
 // logical Delete
 async function logicDeletInv(req, res) {
   try {
@@ -238,13 +263,17 @@ async function logicDeletInv(req, res) {
     const medicine = await MMedicine.findOne({
       where: { MID: inventoryData.MID },
     });
-    if (inventoryData.quantity < 0 || inventoryData.SID < 0 || inventoryData.MID < 0 ) {
+    if (
+      inventoryData.quantity < 0 ||
+      inventoryData.SID < 0 ||
+      inventoryData.MID < 0
+    ) {
       responses.makeResponsesError(res, "InventoryNVal");
     } else if (!office) {
       responses.makeResponsesError(res, "OfficeNotFound");
-    } else if (!medicine){
+    } else if (!medicine) {
       responses.makeResponsesError(res, "MedicineNotfound");
-    }else{
+    } else {
       if (inventory != null) {
         await MInventory.update(
           {
