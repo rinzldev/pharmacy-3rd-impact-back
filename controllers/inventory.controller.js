@@ -153,47 +153,47 @@ async function getInventoryList(req, res) {
 
 
 //get pages
-async function getPageCount(req, res) {
-  try {
-    const ocode = req.body.oc;
-    const mcode = req.body.mc;
-    const size = req.body.size;
-
-    const totalRecords = await MInventory.findAndCountAll({
-      include: [
-        { model: MOffice, where: { code: { [Op.like]: `%${ocode}%` } } },
-        { model: MMedicine, include: [{ model: Laboratory }], where: { code: { [Op.like]: `%${mcode}%` } } }
-      ],
-    });
-    responses.makeResponsesOkData(res, totalRecords, "Success");
-  } catch (e) {
-    responses.makeResponsesException(res, e);
-  }
-}
-
-
 // async function getPageCount(req, res) {
 //   try {
 //     const ocode = req.body.oc;
 //     const mcode = req.body.mc;
 //     const size = req.body.size;
-//     let totalRecords = await db.sequelize.query(
-//       `
-//         SELECT COUNT(i."IID")
-//         FROM public."Inventories" as i
-//         INNER JOIN public."Offices" as o on i."SID" = o."SID"
-//         INNER JOIN public."Medicines" as m on i."MID" = m."MID"
-//         INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
-//         WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
-//       `,
-//       { type: db.sequelize.QueryTypes.SELECT }
-//     );
-    
+
+//     const totalRecords = await MInventory.findAndCountAll({
+//       include: [
+//         { model: MOffice, where: { code: { [Op.like]: `%${ocode}%` } } },
+//         { model: MMedicine, include: [{ model: Laboratory }], where: { code: { [Op.like]: `%${mcode}%` } } }
+//       ],
+//     });
 //     responses.makeResponsesOkData(res, totalRecords, "Success");
 //   } catch (e) {
 //     responses.makeResponsesException(res, e);
 //   }
 // }
+
+
+async function getPageCount(req, res) {
+  try {
+    const ocode = req.body.oc;
+    const mcode = req.body.mc;
+    const size = req.body.size;
+    let totalRecords = await db.sequelize.query(
+      `
+        SELECT COUNT(i."IID")
+        FROM public."Inventories" as i
+        INNER JOIN public."Offices" as o on i."SID" = o."SID"
+        INNER JOIN public."Medicines" as m on i."MID" = m."MID"
+        INNER JOIN public."Laboratories" as l on m."LID" = l."LID"
+        WHERE (o."code" LIKE '%${ocode}%' AND m."code" LIKE '%${mcode}%')
+      `,
+      { type: db.sequelize.QueryTypes.SELECT }
+    );
+    
+    responses.makeResponsesOkData(res, totalRecords, "Success");
+  } catch (e) {
+    responses.makeResponsesException(res, e);
+  }
+}
 
 //update inventory
 async function updateInventory(req, res) {
