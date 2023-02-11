@@ -190,7 +190,7 @@ async function updateUser(req, res) {
           phone: userData.phone,
           type: userData.type,
           password: bcrypt.hashSync(userData.password),
-          status: userData.status,
+          status: true,
         },
         {
           where: { UID: id },
